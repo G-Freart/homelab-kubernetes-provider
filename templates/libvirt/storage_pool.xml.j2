@@ -1,0 +1,12 @@
+<!--
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+-->
+
+<pool type='dir'>
+  <name>{{ cluster_name }}</name>
+  <target>
+    <path>{{ libvirt_storage_pool_path }}/{{ cluster_name }}</path>
+  </target>
+</pool>

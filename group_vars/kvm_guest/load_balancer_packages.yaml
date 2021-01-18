@@ -1,0 +1,65 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+load_balancer_packages:
+  "Ubuntu 18.04":
+    supported:                  True
+    apt_list:
+      - { state: "present", name: "ufw"                     }  
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "network-manager"         }  
+
+  "Ubuntu 20.04":
+    supported:                  True
+    apt_list:
+      - { state: "present", name: "ufw"                     }  
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "network-manager"         }  
+
+  "Ubuntu 20.10":
+    supported:                  True
+    apt_list:
+      - { state: "present", name: "ufw"                     }  
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "network-manager"         }  
+
+  "CentOS 7":
+    supported:                  True
+    yum_list:
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "firewalld"               }  
+      - { state: "present", name: "NetworkManager"          }  
+
+  "CentOS 8.1":
+    supported:                  True
+    yum_list:
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "firewalld"               }  
+      - { state: "present", name: "NetworkManager"          }  
+
+  "CentOS 8.2":
+    supported:                  True
+    yum_list:
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "firewalld"               }  
+      - { state: "present", name: "NetworkManager"          }  
+
+  "CentOS 8.3":
+    supported:                  True
+    yum_list:
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "firewalld"               }  
+      - { state: "present", name: "NetworkManager"          }  
+
+  "CentOS 8 Stream":
+    supported:                  True
+    yum_list:
+      - { state: "present", name: "haproxy"                 }  
+      - { state: "present", name: "firewalld"               }  
+      - { state: "present", name: "NetworkManager"          }  
+

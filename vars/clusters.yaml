@@ -1,0 +1,45 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+# Within this file, you can define your own cluster definition
+#
+definition:
+
+  "andromeda":
+
+    guest_os:           'Ubuntu 20.04'
+    container_runtime:  crio
+    cni_plugin:         flannel
+    ingress:            haproxy
+
+    control_planes:
+      vms:              3
+      vcpu:             2
+      mem:              6
+      disk:             30
+
+    worker_nodes:
+      vms:              3
+      vcpu:             3
+      mem:              12
+      disk:             60
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              4
+      disk:             30
+
+    network:
+      iface:            ens3
+      network_cidr:     192.168.1.0/24
+      domain:           homelab
+      bridge:           homelab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+

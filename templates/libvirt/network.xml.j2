@@ -1,0 +1,21 @@
+<!--
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+-->
+
+<network>
+  <name>{{ clusters.definition[cluster_name].network.bridge }}</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='{{ clusters.definition[cluster_name].network.bridge }}' stp='on' delay='0'/>
+  <domain name='{{ clusters.definition[cluster_name].network.domain }}' localOnly='yes'/>
+  <ip address='{{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}' netmask='{{ clusters.definition[cluster_name].network.network_cidr | ipaddr('netmask') }}'>
+    <dhcp>
+      <range start='{{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(2) }}' end='{{ clusters.definition[cluster_name].network.network_cidr | ipaddr('last_usable') }}'/>
+    </dhcp>
+  </ip>
+</network>

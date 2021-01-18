@@ -1,0 +1,175 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook is in charge to retrieve iso for the guest OS
+  hosts: kvm_host
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name: Libvirt get iso -- Check if the used libvirt storage path already exist
+      stat:
+        path:           "{{ libvirt_storage_pool_path }}"
+      register:         spp_result
+
+    - name: "Libvirt get iso -- Creating {{ libvirt_storage_pool_path }}"
+      file:
+        path:           "{{ libvirt_storage_pool_path }}"
+        state:          directory
+      become:           true
+      when:             spp_result.stat.exists == False
+
+    - name: Libvirt get iso -- Check if the used libvirt cloud image path already exist
+      stat:
+        path:           "{{ libvirt_cloud_image_path }}"
+      register:         cip
+
+    - name: "Libvirt get iso -- Creating {{ libvirt_cloud_image_path }}"
+      file:
+        path:           "{{ libvirt_cloud_image_path }}"
+        state:          directory
+      become:           true
+      when:     cip.stat.exists == False
+
+    - name: Libvirt get iso -- Check if the used libvirt node image path already exist
+      stat:
+        path:           "{{ libvirt_node_image_path }}/{{ cluster_name }}"
+      register:         nip
+
+    - name: "Libvirt get iso -- Creating {{ libvirt_node_image_path }}/{{ cluster_name }}"
+      file:
+        path:           "{{ libvirt_node_image_path }}/{{ cluster_name }}"
+        state:          directory
+      become:           true
+      when:             nip.stat.exists == False
+
+
+    - name: Libvirt get iso -- Download cloud images not yet retreived
+      get_url:
+        url:            "{{ item.value.url }}"
+        dest:           "{{ libvirt_cloud_image_path }}/{{ item.value.url | basename }}"
+        mode:           0644
+        force:          no
+        validate_certs: no
+      become:           true
+      loop:             "{{ lookup('dict', cloud_images) }}"
+
+
+    - name: "Libvirt get iso -- Check if control plane node image exists for the cluster"
+      stat:
+        path:           "{{ libvirt_node_image_path }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-control-plane.qcow2"
+      register:         mni
+
+    - name: "Libvirt get iso -- Configure control_plane node images for the cluster if needed"
+      block:
+
+        - name: "Libvirt get iso -- Create a copy for control planes nodes for the cluster"
+          copy: 
+            src:        "{{ libvirt_cloud_image_path }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['url']  | basename }}"
+            dest:       "{{ libvirt_node_image_path  }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-control-plane.qcow2"
+            remote_src: true
+          become:       true
+
+        - name: "Libvirt get iso -- Growing cloud partition to avoid disk pressure"
+          shell:        qemu-img resize "{{ libvirt_node_image_path  }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-control-plane.qcow2" "{{ clusters.definition[cluster_name].control_planes.disk }}G"
+          become:       true
+
+      when: mni.stat.exists == False
+
+
+    - name: "Libvirt get iso -- Check if worker node image exists for the cluster"
+      stat:
+        path:  "{{ libvirt_node_image_path }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-worker.qcow2"
+      register: wni
+
+    - name: "Libvirt get iso -- Configure worker node images for the cluster if needed"
+      block:
+
+        - name: "Libvirt get iso -- Create a copy for worker nodes for the cluster"
+          copy: 
+            src:        "{{ libvirt_cloud_image_path }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['url']  | basename }}"
+            dest:       "{{ libvirt_node_image_path  }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-worker.qcow2"
+            remote_src: true
+          become:       true
+
+        - name: "Libvirt get iso -- Growing cloud partition to avoid disk pressure"
+          shell:        qemu-img resize "{{ libvirt_node_image_path  }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-worker.qcow2" "{{ clusters.definition[cluster_name].worker_nodes.disk }}G"
+          become:       true
+
+      when: wni.stat.exists == False
+
+
+    - name: "Libvirt get iso -- Check if load balancer image exists for the cluster"
+      stat:
+        path:  "{{ libvirt_node_image_path }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-load-balancer.qcow2"
+      register: bli
+      when: clusters.definition[cluster_name].control_planes.vms > 1
+
+    - name: "Libvirt get iso -- Configure load balancer node images for the cluster if needed"
+      block:
+
+        - name: "Libvirt get iso -- Create a copy for load balancer nodes for the cluster"
+          copy: 
+            src:        "{{ libvirt_cloud_image_path }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['url']  | basename }}"
+            dest:       "{{ libvirt_node_image_path  }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-load-balancer.qcow2"
+            remote_src: true
+          become:       true
+
+        - name: "Libvirt get iso -- Growing cloud partition to avoid disk pressure"
+          shell:        qemu-img resize "{{ libvirt_node_image_path  }}/{{ cluster_name }}/{{ cloud_images[clusters.definition[cluster_name].guest_os]['image_name'] }}-load-balancer.qcow2" "{{ clusters.definition[cluster_name].load_balancers.disk }}G"
+          become:       true
+
+      when: 
+        - bli is defined 
+        - bli.stat is defined 
+        - bli.stat.exists == False
+

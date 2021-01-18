@@ -1,0 +1,13 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+collections:
+  # Install a collection from Ansible Galaxy.
+  - name:    community.libvirt
+    version: 1.0.0
+    source:  https://galaxy.ansible.com

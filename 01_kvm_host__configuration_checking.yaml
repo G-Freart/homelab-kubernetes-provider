@@ -1,0 +1,142 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook checks the Host and the cluster configuration
+  hosts: kvm_host
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    - group_vars/kvm_guest/crio_packages.yaml
+    - group_vars/kvm_guest/docker_packages.yaml
+
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name: Configuration checking -- Check ansible minimum version
+      fail:
+        msg: 'Your ansible version should be at least 2.9.0 but was {{ ansible_version.full  }}'
+      when: ansible_version.full is version('2.9.0', '<')
+
+    - name: Configuration checking -- Check if host distribution is supported
+      fail:
+        msg: 'Your hosting distribution ({{ansible_distribution}} {{ansible_distribution_version}}) is actually unsupported'
+      when: 
+        - not (ansible_distribution == 'Ubuntu' and ansible_distribution_version == '20.04' )
+        - not (ansible_distribution == 'CentOS' and ansible_distribution_version == '8' )
+
+    - name: Configuration checking -- Check if cluster has a reliant definition
+      fail:
+        msg: 'Your hosting distribution ({{cluster_name}} must have a reliant definition'
+      when: clusters.definition[cluster_name] is not defined
+
+    - name: Configuration checking -- Check if guest distribution is supported
+      fail:
+        msg: 'Your guest distribution ({{ clusters.definition[cluster_name].guest_os }}) is actually unsupported'
+      when: cloud_images[clusters.definition[cluster_name].guest_os] is not defined
+         or cloud_images[clusters.definition[cluster_name].guest_os].supported is not defined
+         or cloud_images[clusters.definition[cluster_name].guest_os].supported == False
+
+    - name: Configuration checking -- Check if the container runtime is supported on the guest distribution 
+      fail:
+        msg: 'Using {{ clusters.definition[cluster_name].container_runtime }} on your guest distribution ({{ clusters.definition[cluster_name].guest_os }}) is actually unsupported'
+      when:     (
+                   clusters.definition[cluster_name].container_runtime == 'crio' and 
+                   (
+                        crio_packages[clusters.definition[cluster_name].guest_os] is not defined
+                     or crio_packages[clusters.definition[cluster_name].guest_os].supported is not defined
+                     or crio_packages[clusters.definition[cluster_name].guest_os].supported == False
+                   )
+                )
+                or
+                (
+                   clusters.definition[cluster_name].container_runtime == 'docker' and 
+                   (
+                        docker_packages[clusters.definition[cluster_name].guest_os] is not defined
+                     or docker_packages[clusters.definition[cluster_name].guest_os].supported is not defined
+                     or docker_packages[clusters.definition[cluster_name].guest_os].supported == False
+                   )
+                )
+
+
+    - name: Configuration checking -- Check if the container runtime is supported on the guest distribution [Docker]
+      fail:
+        msg: 'Using {{ clusters.definition[cluster_name].container_runtime }} on your guest distribution ({{ clusters.definition[cluster_name].guest_os }}) is actually unsupported'
+      when: 
+        - clusters.definition[cluster_name].container_runtime == 'crio' 
+        -     crio_packages[clusters.definition[cluster_name].guest_os] is not defined
+           or crio_packages[clusters.definition[cluster_name].guest_os].supported is not defined
+           or crio_packages[clusters.definition[cluster_name].guest_os].supported == False
+
+    - name: Configuration checking -- Check at least one control plane VM is defined
+      fail:
+        msg: At least one control plane should be selected
+      when:
+        - clusters.definition[cluster_name].control_planes.vms is not defined or clusters.definition[cluster_name].control_planes.vms <= 0
+
+    - name: Configuration checking -- Check at least one worker node VM is defined
+      fail:
+        msg: At least one worker node should be selected
+      when:
+        - clusters.definition[cluster_name].worker_nodes.vms is not defined or clusters.definition[cluster_name].worker_nodes.vms <= 0
+ 
+    - name: Configuration checking -- Check if one container runtime is defined
+      fail:
+        msg: Select one container runtime 'docker', 'containerd', 'crio'
+      when:
+        - clusters.definition[cluster_name].container_runtime != 'crio'
+        - clusters.definition[cluster_name].container_runtime != 'docker'
+        - clusters.definition[cluster_name].container_runtime != 'containerd'
+
+    - name: Configuration checking -- Check if one CNI plugin is selected 
+      fail:
+        msg: Select at least a CNI plugin 'calico' or 'flannel'
+      when:
+        - clusters.definition[cluster_name].cni_plugin != 'calico'
+        - clusters.definition[cluster_name].cni_plugin != 'flannel'
+

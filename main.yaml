@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- import_playbook: 01_kvm_host__configuration_checking.yaml
+- import_playbook: 02_kvm_host__setup.yaml
+- import_playbook: 03_kvm_host__libvirt_create_resource.yaml
+- import_playbook: 04_kvm_host__libvirt_get_iso.yaml
+- import_playbook: 05_kvm_host__dns_guest_network_setup.yaml
+- import_playbook: 06_kvm_host__cloud_instance_settings.yaml
+- import_playbook: 07_kvm_host__generate_ssh_key.yaml
+- import_playbook: 08_kvm_host__control_plane_provisioning.yaml
+- import_playbook: 09_kvm_host__worker_provisioning.yaml
+- import_playbook: 10_kvm_host__load_balancer_provisioning.yaml
+- import_playbook: 11_kvm_host__check_provisionning.yaml
+- import_playbook: 12_kvm_guest__prerequisites.yaml
+- import_playbook: 13_kvm_guest__crio_setup.yaml
+- import_playbook: 14_kvm_guest__docker_setup.yaml
+- import_playbook: 15_kvm_guest__containerd_setup.yaml
+- import_playbook: 16_kvm_guest__load_balancer_setup.yaml
+- import_playbook: 17_kvm_guest__kube_setup.yaml
+- import_playbook: 18_kvm_guest__kube_control_plane_first_node_setup.yaml
+- import_playbook: 19_kvm_guest__kube_control_plane_cni_calico_setup.yaml
+- import_playbook: 20_kvm_guest__kube_control_plane_cni_flannel_setup.yaml
+- import_playbook: 21_kvm_guest__kube_control_plane_other_nodes_setup.yaml
+- import_playbook: 22_kvm_guest__kube_worker_nodes_setup.yaml
+- import_playbook: 23_kvm_guest__kube_control_plane_ingress_nginx_setup.yaml
+- import_playbook: 24_kvm_guest__kube_control_plane_ingress_haproxy_setup.yaml
+- import_playbook: 25_kvm_guest__load_balancer_ingress_setup.yaml

@@ -1,0 +1,120 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+#
+# We are using the last available cri-o version as defined at the official github project
+#
+#   https://github.com/cri-o/cri-o/blob/master/install.md#install-packaged-versions-of-cri-o
+#
+docker_packages:
+  "Ubuntu 18.04":
+    supported:                  True
+    docker_key_cmd:             "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key --keyring /etc/apt/trusted.gpg.d/docker.gpg add -"
+    add_repository_amd64_cmd:   "echo \"deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable\" > /etc/apt/sources.list.d/docker-ce.list"
+    add_repository_arm64_cmd:   "echo \"deb [arch=arm64] https://download.docker.com/linux/ubuntu bionic stable\" > /etc/apt/sources.list.d/docker-ce.list"
+    apt_prerequisite_list:
+      - { state: "present", name: "apt-transport-https"     		}  
+      - { state: "present", name: "ca-certificates"         		}  
+      - { state: "present", name: "curl"                    		}  
+      - { state: "present", name: "software-properties-common"  	}  
+      - { state: "present", name: "gnupg2"         			}  
+    apt_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "Ubuntu 20.04":
+    supported:                  True
+    docker_key_cmd:             "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key --keyring /etc/apt/trusted.gpg.d/docker.gpg add -"
+    add_repository_amd64_cmd:   "echo \"deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable\" > /etc/apt/sources.list.d/docker-ce.list"
+    add_repository_arm64_cmd:   "echo \"deb [arch=arm64] https://download.docker.com/linux/ubuntu focal stable\" > /etc/apt/sources.list.d/docker-ce.list"
+    apt_prerequisite_list:
+      - { state: "present", name: "apt-transport-https"     		}  
+      - { state: "present", name: "ca-certificates"         		}  
+      - { state: "present", name: "curl"                    		}  
+      - { state: "present", name: "software-properties-common"  	}  
+      - { state: "present", name: "gnupg2"         			}  
+    apt_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "Ubuntu 20.10":
+    supported:                  True
+    docker_key_cmd:             "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/docker-ce-archive-keyring.gpg > /dev/null"
+    add_repository_amd64_cmd:   "echo \"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-ce-archive-keyring.gpg] https://download.docker.com/linux/ubuntu groovy stable\" > /etc/apt/sources.list.d/docker-ce.list"
+    add_repository_arm64_cmd:   "echo \"deb [arch=arm64 signed-by=/usr/share/keyrings/docker-ce-archive-keyring.gpg] https://download.docker.com/linux/ubuntu groovy stable\" > /etc/apt/sources.list.d/docker-ce.list"
+
+    apt_prerequisite_list:
+      - { state: "present", name: "apt-transport-https"     		}  
+      - { state: "present", name: "ca-certificates"         		}  
+      - { state: "present", name: "curl"                    		}  
+      - { state: "present", name: "software-properties-common"  	}  
+      - { state: "present", name: "gnupg2"         			}  
+    apt_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "CentOS 7":
+    supported:                  True
+    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
+    yum_prerequisite_list:
+      - { state: "present", name: "device-mapper-persistent-data"       }  
+      - { state: "present", name: "lvm2"         			}  
+    yum_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "CentOS 8.1":
+    supported:                  True
+    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
+    yum_prerequisite_list:
+      - { state: "present", name: "device-mapper-persistent-data"       }  
+      - { state: "present", name: "lvm2"         			}  
+      - { state: "present", name: "iptables"       		        }
+    yum_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "CentOS 8.2":
+    supported:                  True
+    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
+    yum_prerequisite_list:
+      - { state: "present", name: "device-mapper-persistent-data"       }  
+      - { state: "present", name: "lvm2"         			}  
+      - { state: "present", name: "iptables"       		        }
+    yum_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "CentOS 8.3":
+    supported:                  True
+    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
+    yum_prerequisite_list:
+      - { state: "present", name: "device-mapper-persistent-data"       }  
+      - { state: "present", name: "lvm2"         			}  
+    yum_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+
+  "CentOS 8 Stream":
+    supported:                  True
+    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
+    yum_prerequisite_list:
+      - { state: "present", name: "device-mapper-persistent-data"       }  
+      - { state: "present", name: "lvm2"         			}  
+    yum_docker_ce_list:
+      - { state: "present", name: "containerd.io"       		}
+      - { state: "present", name: "docker-ce"         			}
+      - { state: "present", name: "docker-ce-cli"         		}
+

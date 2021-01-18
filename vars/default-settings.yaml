@@ -1,0 +1,21 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+
+# Following settings are overridable using extra parameter when executing ansible-playbook 
+#
+cluster_name:                   andromeda
+username:                       gilfre5
+password:                       gilfre5
+keymap:                         be-latin1
+timezone:                       Europe/Brussels
+
+libvirt_storage_pool_path:      /var/lib/libvirt/images
+libvirt_cloud_image_path:       /var/lib/libvirt/iso_masters
+libvirt_node_image_path:        /var/lib/libvirt/iso_nodes
+

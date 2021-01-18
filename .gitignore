@@ -1,0 +1,5 @@
+*.hcl
+*.swp
+*.tfstate
+*.tfstate.backup
+/instances/

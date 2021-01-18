@@ -1,0 +1,119 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+variable "hostname"        { default = ""     }
+variable "domain"          { default = ""     }
+variable "iface"           { default = ""     }
+variable "keymap"          { default = ""     }
+variable "timezone"        { default = ""     }
+variable "memory"          { default = 2      }
+variable "cpu"             { default = 2      }
+variable "vm_count"        { default = 1      }
+variable "vm_volume_size"  { default = 20     }
+variable "libvirt_network" { default = ""     }
+variable "libvirt_pool"    { default = ""     }
+variable "os_image_path"   { default = ""     }
+variable "id_rsa_pub_path" { default = ""     }
+variable "cloud_init_file" { default = ""     }
+variable "username"        { default = ""     }
+variable "password"        { default = ""     }
+
+provider "libvirt" {
+  uri = "qemu:///system"
+}
+
+resource "libvirt_volume" "disk1" {
+  count  = var.vm_count
+  name   = format("%s-%02d_disk1.qcow2", var.hostname, count.index + 1)
+  pool   = var.libvirt_pool
+  source = var.os_image_path
+  format = "qcow2"
+}
+
+data "template_file" "user_data" {
+  count    = var.vm_count
+  template = file("${path.module}/${var.cloud_init_file}")
+  vars     = {
+    hostname        = format("%s-%02d.%s", var.hostname, count.index + 1, var.domain)
+    fqdn            = format("%s-%02d.%s", var.hostname, count.index + 1, var.domain)
+    id_rsa_pub      = file(var.id_rsa_pub_path)
+    keymap          = var.keymap
+    timezone        = var.timezone
+    iface           = var.iface
+    username        = var.username
+    password        = var.password
+  }
+}
+
+data "template_file" "network_config" {
+  count    = var.vm_count
+
+  template = file("${path.module}/network_config.cfg")
+  vars     = {
+    hostname   = format("%s-%02d.%s", var.hostname, count.index + 1, var.domain)
+    iface      = var.iface
+  }
+}
+
+resource "libvirt_cloudinit_disk" "common_init" {
+  count          = var.vm_count
+
+  name           = format("%s-%02d-common_init.iso", var.hostname, count.index + 1)
+  pool           = var.libvirt_pool 
+  user_data      = data.template_file.user_data[count.index].rendered
+  network_config = data.template_file.network_config[count.index].rendered
+}
+
+resource "libvirt_domain" "VMs" {
+  count  = var.vm_count
+
+  name   = format("%s-%02d", var.hostname, count.index + 1)
+  memory = var.memory*1024
+  vcpu   = var.cpu
+
+  disk {
+    volume_id = libvirt_volume.disk1[count.index].id
+  }
+
+  network_interface {
+    network_name = var.libvirt_network
+  }
+
+  cloudinit = libvirt_cloudinit_disk.common_init[count.index].id
+
+  console {
+    type        = "pty"
+    target_port = "0"
+    target_type = "serial"
+  }
+
+  graphics {
+    type        = "spice"
+    listen_type = "address"
+    autoport    = "true"
+  }
+}
+
+terraform {
+  required_version = ">= 0.14"
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "0.6.3"
+    }
+  }
+}
+
+output "ips" {
+  value = flatten(libvirt_domain.VMs.*.network_interface.0.addresses)
+}
+
+output "macs" {
+  value = flatten(libvirt_domain.VMs.*.network_interface.0.mac)
+}
+

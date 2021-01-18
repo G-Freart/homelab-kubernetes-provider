@@ -1,0 +1,166 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook installs every needed tools to provision infrastructure VMs
+  hosts: kvm_host
+
+  vars_files:
+    - vars/default-settings.yaml
+
+  tasks:
+
+    - name: Setup -- Checking count of available hardware virtualization core
+      shell: grep -Eoc '(vmx|svm)' /proc/cpuinfo
+      register: virtualization_core
+      changed_when: false
+      failed_when: virtualization_core.stdout | int == 0
+
+    - name: Setup -- Installing CentOS Dependencies
+      block:
+
+        - name: Setup -- Upgrade all packages under Centos
+          yum:
+            name: '*'
+            state: latest
+          become: true
+
+        - name: Setup -- Install required packages under CentOS
+          yum:
+            name: "{{ kvm_host_packages['CentOS ' + ansible_distribution_version] }}"
+            state: latest
+          become: true
+          when: kvm_host_packages['CentOS ' + ansible_distribution_version] is defined
+
+      when: ansible_distribution == 'CentOS'
+
+    - name: Setup -- Installing Ubuntu Dependencies
+      block:
+
+        - name: Setup -- Upgrade all packages under Ubuntu
+          apt:
+            name: '*'
+            state: latest
+          become: true
+
+        - name: Setup -- Install required packages under Ubuntu
+          yum:
+            name: "{{ kvm_host_packages['Ubuntu ' + ansible_distribution_version] }}"
+            state: latest
+          become: true
+          when: kvm_host_packages['Ubuntu ' + ansible_distribution_version] is defined
+
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Setup -- Check if terraform is already present
+      stat:
+        path:   /usr/bin/terraform
+      register: terraform_bin_result
+
+    - name: Setup -- Installing terraform
+      block:
+
+        - name: Setup -- Download and provision Terraform under amd64 architecture
+          unarchive: 
+            src: "{{ terraform_amd64_url }}"
+            dest: /usr/bin/
+            mode: 755
+            remote_src: yes
+          become: true
+          when: ansible_architecture == 'x86_64' 
+
+        - name: Setup -- Download and provision Terraform under arm64 architecture
+          unarchive: 
+            src: "{{ terraform_arm64_url }}"
+            dest: /usr/bin/
+            mode: 755
+            remote_src: yes
+          become: true
+          when: ansible_architecture == 'aarch64' 
+
+      when: terraform_bin_result.stat.exists == False
+
+    #
+    # https://github.com/ansible/ansible/issues/71528 => using shell command :-S
+    #
+    #   - name: Setup -- Virtualization services are enabled
+    #     systemd:
+    #       name:          libvirtd
+    #       state:         started
+    #       enabled:       yes
+    #     become:          true
+    #
+
+    - name: Setup -- Enable Virtualization service
+      command:       systemctl enable libvirtd
+      become:        true
+
+    - name: Setup -- Start Virtualization service
+      command:       systemctl start libvirtd
+      become:        true
+
+    - name: "Setup -- Check if libvirt provider source is already present as {{ libvirt.source_dir }}"
+      stat:
+        path:        "{{ libvirt.source_dir }}"
+      register:      libvirt_source_result
+
+    - name: Setup -- Compiling libvirt plugins
+      block:
+
+        - name: Setup -- Create libvirt provider folder
+          file: 
+            path: "{{ libvirt.base_dir }}" 
+            mode: 0744
+            state: directory
+
+        - name: "Setup -- Download and extract {{ libvirt.provider_source }}"
+          unarchive: 
+            src: "{{ libvirt.provider_source }}"
+            dest: "{{ libvirt.base_dir }}" 
+            mode: 0744
+            remote_src: yes
+
+        - name: "Setup -- Run 'install' target on libivrt-provider inside {{ libvirt.source_dir }}"
+          make:
+            chdir: "{{ libvirt.source_dir }}"
+            target: install
+
+      when: libvirt_source_result.stat.exists == False
+
+    - name: Setup -- Computing compiled libvirt  path
+      stat:
+        path:        "~/go/bin/terraform-provider-libvirt"
+      register:      compilation_output_dir
+
+    - name: Setup -- Check if libvirt plugins is already present
+      stat:
+        path:        "~/{{ libvirt.relative_plugin_dir }}"
+      register:      libvirt_plugin_result
+
+    - name: Setup -- Installing libvirt provider
+      block:
+
+        - name: Setup -- Ensures terraform plugins directory exists
+          file:
+            path: "~/{{ libvirt.relative_plugin_dir }}"
+            state: directory
+            mode:        0755
+
+        - name: Setup -- Ensures terraform plugins directory rights
+          shell:
+            cmd:         "chmod -R a+rX ~/{{ libvirt.relative_plugin_dir }}"
+            warn:        false
+
+        - name: Setup -- Copy libvirt provider to plugins directory
+          copy:
+            src:         "{{ compilation_output_dir.stat.path }}"
+            dest:        "~/{{ libvirt.relative_plugin_dir }}"
+            remote_src:  true
+            mode:        0755
+
+      when: libvirt_plugin_result.stat.exists == False
+

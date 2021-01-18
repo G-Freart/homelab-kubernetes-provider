@@ -1,0 +1,55 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook check connection and set facts
+  hosts: control_planes,workers,load_balancers
+
+  vars_files:
+    - vars/default-settings.yaml
+
+  gather_facts: no
+
+  tasks:
+
+    - name: Check provisionning -- Wait for target connection to become reachable/usable with a timeout of 600 seconds
+      wait_for_connection:
+        timeout: 600
+        delay: 0
+    - ping:
+
+    - name: Check provisionning -- add hosts to children groups
+      group_by:
+        key: "{{ group_children }}"
+
+    - setup:
+      register: machine_facts
+ 
+    - set_fact:
+        host_ip:        "{{ machine_facts.ansible_facts.ansible_default_ipv4.address }}"
+        host_interface: "{{ machine_facts.ansible_facts.ansible_default_ipv4.interface }}"
+        host_mac:       "{{ machine_facts.ansible_facts.ansible_default_ipv4.macaddress }}"
+        host_fqdn:      "{{ machine_facts.ansible_facts.ansible_fqdn }}" 
+ 
+    - name: Check provisionning -- Computing instance directory
+      set_fact:
+        instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
+        
+    - name: Check provisionning -- generate local cluster inventory
+      template:
+        src:   templates/inventory/cluster_inventory.j2
+        dest:  "{{ instance_dir }}/{{ cluster_name }}/inventory/cluster.yaml"
+      delegate_to: localhost
+      vars:
+        #
+        # Work-around for the issue happening when the targetted Guest VM does not have the same python version 
+        # as f.i. when kvm_guest OS is differents of the kvm_host OS
+        #
+        #    https://github.com/ansible/awx/issues/6835
+        #
+        ansible_python_interpreter: /usr/bin/python3
+      run_once: True

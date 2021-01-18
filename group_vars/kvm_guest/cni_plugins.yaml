@@ -1,0 +1,14 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+cni_plugins:
+  calico:
+    k8s_definition_url: https://docs.projectcalico.org/manifests/calico.yaml
+
+  flannel:
+    k8s_definition_url: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml

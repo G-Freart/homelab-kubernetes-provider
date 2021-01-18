@@ -1,0 +1,229 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook will install common kube package
+  hosts: control_planes,workers
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    - group_vars/kvm_guest/kube_packages.yaml
+    
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name:  Kube setup -- Current provisioning facts of the VMs 
+      debug:
+        var: ansible_local['homelab-kubernetes-provisioner']
+
+    - name:  Kube setup -- Configure node VMs
+      block:
+
+        - name: Kube setup -- Disabling swap
+          shell:
+            cmd:  swapoff -a
+          become: true
+
+        - name: Kube setup -- Disabling swap on next reboot
+          shell:
+            cmd:  sed -e "/ swap /s/^[^#]/# /" /etc/fstab
+            warn: false
+          become: true
+
+        - name: Kube setup -- Disabling SELinux
+          shell:
+            cmd:  setenforce 0
+          when:   cloud_images[clusters.definition[cluster_name].guest_os].application_security == 'selinux'
+          become: true
+
+        - name: Kube setup -- Disabling SELinux on next reboot
+          shell:
+            cmd:  sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+            warn: false
+          when:   cloud_images[clusters.definition[cluster_name].guest_os].application_security == 'selinux'
+          become: true
+
+        - name: Kube setup -- Processing Red-Hat like VM
+          block:
+            - name : Kube setup -- Creating kubernetes yum repo
+              copy:
+                dest:       /etc/yum.repos.d/kubernetes.repo
+                content: |
+                  [kubernetes]
+                  name=Kubernetes
+                  baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ ansible_architecture  }}
+                  enabled=1
+                  gpgcheck=1
+                  repo_gpgcheck=1
+                  gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+              become: true
+            
+            - name: Kube setup -- Force yum repo cache refresh as we have hancrafted new repo file
+              yum:
+                update_cache: yes
+              become:     true
+
+            - name: Kube setup -- Applying yum package
+              yum:
+                name:   "{{ item.name }}"
+                state:  "{{ item.state }}"
+              loop:     "{{  kube_packages[clusters.definition[cluster_name].guest_os].yum_list }}"
+              register: result
+              until:    result is succeeded
+              become:   true
+              when:     kube_packages[clusters.definition[cluster_name].guest_os].yum_list is defined
+
+          when: cloud_images[clusters.definition[cluster_name].guest_os].package_manager == 'yum'
+
+        - name: Kube setup -- Processing Debian like VM 
+          block:
+            - name: Kube setup -- Installing apt kubernetes key
+              shell:
+                cmd:      "{{ kube_packages[clusters.definition[cluster_name].guest_os].kube_key_cmd }}"
+                warn:     false
+              become:     true
+
+            - name: Kube setup -- Installing apt kubernetes repo
+              shell:
+                cmd:      "{{ kube_packages[clusters.definition[cluster_name].guest_os].kube_repo_cmd }}"
+                warn:     false
+              become:     true
+
+            - name: Kube setup -- Force apt repo cache refresh as we have hancrafted new repo file
+              apt:
+                update_cache: yes
+              become:     true
+
+            - name: Kube setup -- Applying apt package
+              apt:
+                name:   "{{ item.name }}"
+                state:  "{{ item.state }}"
+              loop:     "{{  kube_packages[clusters.definition[cluster_name].guest_os].apt_list }}"
+              register: result
+              until:    result is succeeded
+              become:   true
+              when:     kube_packages[clusters.definition[cluster_name].guest_os].apt_list is defined
+
+          when: cloud_images[clusters.definition[cluster_name].guest_os].package_manager == 'apt'
+
+        - name: kube setup -- Configure Extra settings related to the CRI-O connectivity
+          copy:
+            dest:       "{{ cloud_images[clusters.definition[cluster_name].guest_os].kubelet_extra_arg_file }}"
+            content:    KUBELET_EXTRA_ARGS=--cgroup-driver=systemd --container-runtime=remote --container-runtime-endpoint="unix:///var/run/crio/crio.sock"
+          become:       true
+          when:         clusters.definition[cluster_name].container_runtime == 'crio' 
+
+        - name: kube setup -- Configure crictl settings related to the CRI-O connectivity
+          copy:
+            dest:       "/etc/crictl.yaml"
+            content:    "runtime-endpoint: unix:///var/run/crio/crio.sock"
+          become:       true
+          when:         clusters.definition[cluster_name].container_runtime == 'crio' 
+
+        - name: kube setup -- Configure Extra settings related to the Containerd connectivity
+          copy:
+            dest:       "{{ cloud_images[clusters.definition[cluster_name].guest_os].kubelet_extra_arg_file }}"
+            content:    KUBELET_EXTRA_ARGS=--cgroup-driver=systemd --container-runtime=remote --container-runtime-endpoint="unix:///var/run/containerd/containerd.sock"
+          become:       true
+          when:         clusters.definition[cluster_name].container_runtime == 'containerd' 
+
+        - name: kube setup -- Configure crictl settings related to the containerd connectivity
+          copy:
+            dest:       "/etc/crictl.yaml"
+            content:    "runtime-endpoint: unix:///var/run/containerd/containerd.sock"
+          become:       true
+          when:         clusters.definition[cluster_name].container_runtime == 'containerd' 
+
+        - name: kube setup -- Configure crictl settings related to the docker connectivity
+          copy:
+            dest:       "/etc/crictl.yaml"
+            content:    "runtime-endpoint: unix:///var/run/dockershim.sock"
+          become:       true
+          when:         clusters.definition[cluster_name].container_runtime == 'docker' 
+
+        - name: Kube setup -- Check if reboot is required under Debian like VMs
+          stat:
+            path: /var/run/reboot-required
+          register: reboot_required
+          when:     cloud_images[clusters.definition[cluster_name].guest_os].package_reboot_check == 'reboot_required'
+          become:   true
+
+        - name: Docker setup -- Check if reboot is required under Red Hat like VMs
+          shell:
+            cmd: needs-restarting -r
+          register: needs_restarting
+          when:     cloud_images[clusters.definition[cluster_name].guest_os].package_reboot_check == 'needs_restarting'
+          become:   true
+
+        - name: Kube setup -- Reboot VMs if needed
+          reboot:
+            msg:               "Reboot initiated by Ansible as requested by /var/run/reboot-required or needs-restarting"
+            connect_timeout:   5
+            reboot_timeout:    120
+            pre_reboot_delay:  0
+            post_reboot_delay: 30
+            test_command:      whoami
+          become:   true
+          when: (reboot_required is defined and reboot_required.stat is defined and reboot_required.stat.exists)
+             or (needs_restarting is defined and needs_restarting.rc is defined and needs_restarting.rc != 0)
+
+        - name: Kube setup -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+          lineinfile:
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            line:   "kube_package=true"
+          become:   true
+  
+        - name: Kube setup -- Reload the homelab-kubernetes-provisioner custom fact
+          setup:
+            filter: ansible_local          
+
+      when: 
+        - kube_packages[clusters.definition[cluster_name].guest_os] is defined
+        - kube_packages[clusters.definition[cluster_name].guest_os].supported is defined
+        - kube_packages[clusters.definition[cluster_name].guest_os].supported == True
+        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_package'] is not defined

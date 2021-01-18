@@ -1,0 +1,122 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook will configure workers node
+  hosts: workers
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name:  Kube setup worker nodes -- Current provisioning facts of the VMs 
+      debug:
+        var: ansible_local['homelab-kubernetes-provisioner']
+
+    - name: Kube setup worker nodes -- Computing instance directory
+      set_fact:
+        instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
+        
+    - name:  Kube setup worker nodes -- Configure other nodes
+      block:
+
+        - name: Kube setup worker nodes -- Loading overlay kernel module 
+          modprobe:
+            name:      overlay
+            state:     present
+          become:      true
+
+        - name: Kube setup worker nodes -- Loading br_netfilter kernel module 
+          modprobe:
+            name:      br_netfilter
+            state:     present
+          become:      true
+
+        - name: Kube setup worker nodes -- Enable kubelet daemon
+          command:   systemctl enable kubelet
+          become:    true
+
+        - name: Kube setup worker nodes -- Ensuring kubelet is running
+          shell:     systemctl start kubelet
+          become:    true
+ 
+        - name: Kube setup worker nodes -- Pulling prerequisite image
+          shell:     kubeadm config images pull
+          become:    true
+
+        - name: Kube setup worker nodes -- Joining cluster when load balancer exists
+          shell: >
+            kubeadm join {{ hostvars[groups['load_balancers'][0]].inventory_hostname }}:6443
+            --token {{ lookup ('file', instance_dir + '/' + cluster_name + '/kubelet/kubelet_token.txt') }} 
+            --discovery-token-ca-cert-hash sha256:{{ lookup ('file', instance_dir + '/' + cluster_name + '/kubelet/kubelet_ca_hash.txt') }} 
+          when: clusters.definition[cluster_name].control_planes.vms > 1
+          become: true
+ 
+        - name: Kube setup worker nodes -- Joining cluster when none load balancer exists
+          shell: >
+            kubeadm join {{ hostvars[groups['control_planes'][0]].inventory_hostname }}:6443
+            --token {{ lookup ('file', instance_dir + '/' + cluster_name + '/kubelet/kubelet_token.txt') }} 
+            --discovery-token-ca-cert-hash sha256:{{ lookup ('file', instance_dir + '/' + cluster_name + '/kubelet/kubelet_ca_hash.txt') }} 
+          when: clusters.definition[cluster_name].control_planes.vms == 1
+          become: true
+
+        - name: Kube setup worker nodes  -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+          lineinfile:
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            line:   "kube_node_type=worker"
+          become:   true
+  
+        - name: Kube setup worker nodes -- Reload the homelab-kubernetes-provisioner custom fact
+          setup:
+            filter: ansible_local          
+
+      when: 
+        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_node_type'] is not defined
+        - inventory_hostname != groups['control_planes'][0]

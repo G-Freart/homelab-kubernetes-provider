@@ -1,0 +1,26 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+#---------------------------------------------------------------------
+#                Kubernetes control plane settings
+#---------------------------------------------------------------------
+
+frontend kubernetes-control-plane
+    bind *:6443
+    default_backend kubernetes-control-plane
+    mode tcp
+    option tcplog
+
+backend kubernetes-control-plane
+    balance source
+    mode tcp
+
+{% for node in groups['control_planes'] %}
+    server {{ hostvars[node].ansible_fqdn }} {{ hostvars[node].ansible_default_ipv4.address }}:6443 check
+{% endfor %}
+

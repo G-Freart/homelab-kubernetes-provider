@@ -1,0 +1,407 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+# Cluster topology definitions related to CentOS 8.1
+#
+definition:
+  "c81-cont-fl-ha":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  containerd
+    cni_plugin:         flannel
+    ingress:            haproxy
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+
+  "c81-cont-fl-ng":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  containerd
+    cni_plugin:         flannel
+    ingress:            nginx
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-cont-ca-ha":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  containerd
+    cni_plugin:         calico
+    ingress:            haproxy
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-cont-ca-ng":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  containerd
+    cni_plugin:         calico
+    ingress:            nginx
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-crio-fl-ha":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  crio
+    cni_plugin:         flannel
+    ingress:            haproxy
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-crio-fl-ng":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  crio
+    cni_plugin:         flannel
+    ingress:            nginx
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-crio-ca-ha":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  crio
+    cni_plugin:         calico
+    ingress:            haproxy
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-crio-ca-ng":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  crio
+    cni_plugin:         calico
+    ingress:            nginx
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-dock-fl-ha":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  docker
+    cni_plugin:         flannel
+    ingress:            haproxy
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-dock-fl-ng":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  docker
+    cni_plugin:         flannel
+    ingress:            nginx
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-dock-ca-ha":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  docker
+    cni_plugin:         calico
+    ingress:            haproxy
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16
+
+  "c81-dock-ca-ng":
+
+    guest_os:           'CentOS 8.1'
+    container_runtime:  docker
+    cni_plugin:         calico
+    ingress:            nginx
+
+    control_planes:
+      vms:              2
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    worker_nodes:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             30
+
+    load_balancers:
+      vms:              1
+      vcpu:             2
+      mem:              2
+      disk:             20
+
+    network:
+      iface:            eth0
+      network_cidr:     192.168.150.0/24
+      domain:           k8s.testlab
+      bridge:           k8s-testlab
+      pod_cidr:         10.20.0.0/16
+      service_cidr:     10.110.0.0/16

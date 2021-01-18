@@ -1,0 +1,21 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+[Match]
+Name={{ clusters.definition[cluster_name].network.bridge }}
+
+[Link]
+MTUBytes=1500
+
+[Network]
+Address={{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}/{{ clusters.definition[cluster_name].network.network_cidr | ipaddr("prefix") }}
+DNS={{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}
+Domains={{ clusters.definition[cluster_name].network.domain }}
+
+#ConfigureWithoutCarrier=yes
+#Gateway={{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}

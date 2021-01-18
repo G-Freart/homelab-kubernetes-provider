@@ -1,0 +1,13 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+libvirt:
+  provider_source:        https://github.com/dmacvicar/terraform-provider-libvirt/archive/v0.6.3.tar.gz
+  base_dir:               ~/terraform-source-provider/libvirt
+  source_dir:             ~/terraform-source-provider/libvirt/terraform-provider-libvirt-0.6.3
+  relative_plugin_dir:    .local/share/terraform/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.3/linux_amd64

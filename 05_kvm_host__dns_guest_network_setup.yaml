@@ -1,0 +1,114 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook configures the systemd to manage our custom network dns
+  hosts: kvm_host
+
+  vars_files:
+    - vars/default-settings.yaml
+
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name: Guest DNS network setup  - Configure if os is known to use networkctl (Ubuntu)
+      block:
+        - name: Guest DNS network setup  - Check if Network is already configured
+          stat:
+            path:   "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge }}.network"
+          register: networkd_def
+
+        - name: Guest DNS network setup  - Configure Network for related libvirt network (Ubuntu)
+          template:
+            src:   templates/systemd_network/bridge.network.j2
+            dest:  "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge }}.network"
+          become:  true
+          when:    networkd_def.stat.exists == False
+
+        - name: Guest DNS network setup  - Reload configuration (Ubuntu)
+          shell:
+            cmd:   "networkctl reload"
+          become:  true
+          when:    networkd_def.stat.exists == False
+
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version == '20.04')
+
+    - name: Guest DNS network setup  - Configure using dnsmasq on os which don't use networkctl (Centos)
+      block:
+
+        - name: Guest DNS network setup  - Check if NetworkManager is configured for local DNS
+          stat:
+            path:   /etc/NetworkManager/conf.d/localdns.conf
+          register: localdns_result
+
+        - name: Guest DNS network setup  - Configure NetworkManager for local DNS
+          copy:
+            src:   templates/dnsmasq/localdns.conf
+            dest:  /etc/NetworkManager/conf.d/localdns.conf
+          become:  true
+          when:    localdns_result.stat.exists == False
+
+        - name: Guest DNS network setup  - Check if NetworkManager is configured for related libvirt network
+          stat:
+            path:   "/etc/NetworkManager/dnsmasq.d/{{ clusters.definition[cluster_name].network.domain }}.conf"
+          register: libvirt_network_result
+    
+        - name: Guest DNS network setup  - Configure NetworkManager for related libvirt network
+          template:
+            src:   templates/dnsmasq/libvirt_dnsmasq.conf.j2
+            dest:  "/etc/NetworkManager/dnsmasq.d/{{ clusters.definition[cluster_name].network.domain }}.conf"
+          become:  true
+          when:    libvirt_network_result.stat.exists == False
+    
+        - name: Guest DNS network setup  - Restart NetworkManager if needed
+          service:
+            name:  NetworkManager
+            state: reloaded
+          become:  true
+          when:    localdns_result.stat.exists == False or libvirt_network_result.stat.exists == False
+
+      when: (ansible_distribution == 'CentOS' and ansible_distribution_version == '8')

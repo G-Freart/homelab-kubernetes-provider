@@ -1,0 +1,284 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook install CRI-O as container runtime
+  hosts: control_planes,workers
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    - group_vars/kvm_guest/crio_packages.yaml
+    
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name:  CRIO setup -- Current provisioning facts of the VMs 
+      debug:
+        var: ansible_local['homelab-kubernetes-provisioner']
+
+    - name:  CRIO setup -- Install CRI-O if whished
+      block:
+
+        - name: CRIO setup -- Loading overlay kernel module 
+          modprobe:
+            name:      overlay
+            state:     present
+          become:      true
+
+        - name: CRIO setup -- Loading br_netfilter kernel module 
+          modprobe:
+            name:      br_netfilter
+            state:     present
+          become:      true
+
+        - name : CRIO setup -- Configuring sysctl settings needed
+          copy:
+            dest:      /etc/sysctl.d/99-kubernetes-cri.conf
+            content: |
+              net.bridge.bridge-nf-call-iptables  = 1
+              net.ipv4.ip_forward                 = 1
+              net.bridge.bridge-nf-call-ip6tables = 1
+          become: true
+
+        - name: CRIO setup -- Activating sysctl settings
+          shell:
+            cmd:      "sysctl --system"
+          become:     true
+
+        - name: CRIO setup -- Processing Red-Hat like VM
+          block:
+            - name: CRIO setup -- Setting libcontainer yum repo
+              get_url:
+                url:     "{{ crio_packages[clusters.definition[cluster_name].guest_os].repo_lib_container_url 
+                               | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                               | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                          }}"
+                dest:     "/etc/yum.repos.d/{{ crio_packages[clusters.definition[cluster_name].guest_os].repo_lib_container_url 
+                                                 | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                                                 | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                                                 | basename
+                                            }}"
+              become:     true
+
+            - name: CRIO setup -- Setting cri-o yum repo
+              get_url:
+                url:     "{{ crio_packages[clusters.definition[cluster_name].guest_os].repo_cri_versioned_url 
+                               | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                               | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                          }}"
+                dest:     "/etc/yum.repos.d/{{ crio_packages[clusters.definition[cluster_name].guest_os].repo_cri_versioned_url 
+                                                 | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                                                 | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                                                 | basename
+                                            }}"
+              become:     true
+
+            - name: CRIO setup -- Force yum repo cache refresh as we have hancrafted new repo file
+              yum:
+                update_cache: yes
+              become:     true
+
+            - name: CRIO setup -- Installing CRI-O using yum
+              yum:
+                name:      'cri-o'
+                state:     present
+              become:      true
+
+            - name: CRIO setup -- Bugfix for https://bugzilla.redhat.com/show_bug.cgi?id=1441737
+              script: files/redhat_bugfix_1441737.sh
+              become: true
+              when: 
+                - crio_packages[clusters.definition[cluster_name].guest_os].may_detach_mounts is defined
+                - crio_packages[clusters.definition[cluster_name].guest_os].may_detach_mounts == True
+
+          when: cloud_images[clusters.definition[cluster_name].guest_os].package_manager == 'yum'
+
+        - name: CRIO setup -- Processing Debian like VM 
+          block:
+
+            - name : Create libcontainer apt repo
+              copy:
+                dest:     "/etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+                content:  "deb {{ crio_packages[clusters.definition[cluster_name].guest_os].repo_lib_container_url 
+                                   | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                                   | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                               }} /"
+              become:     true
+
+            - name : CRIO setup -- Create CRI-O apt repo
+              copy:
+                dest:     "/etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:{{ crio_packages[clusters.definition[cluster_name].guest_os].version }}.list"
+                content:  "deb {{ crio_packages[clusters.definition[cluster_name].guest_os].repo_crio_url 
+                                   | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                                   | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                               }} /"
+              become:     true
+
+            - name: CRIO setup -- Installing apt libcontainer key
+              shell:
+                cmd:      "{{ crio_packages[clusters.definition[cluster_name].guest_os].repo_lib_container_key_cmd 
+                               | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                               | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                          }}"
+                warn:     false
+              become:     true
+
+            - name: CRIO setup -- Installing apt CRI-O key
+              shell:
+                cmd:      "{{ crio_packages[clusters.definition[cluster_name].guest_os].repo_lib_container_key_cmd 
+                               | replace('$OS',      crio_packages[clusters.definition[cluster_name].guest_os].os)
+                               | replace('$VERSION', crio_packages[clusters.definition[cluster_name].guest_os].version)
+                          }}"
+                warn:     false
+              become:     true
+
+            - name: CRIO setup -- Force apt repo cache refresh as we have hancrafted new repo file
+              apt:
+                update_cache: yes
+              become:     true
+
+            - name: CRIO setup -- Installing CRI-O using apt
+              apt:
+                name:      cri-o
+                state:     present
+              become:      true
+
+            - name: CRIO setup -- Installing CRI-O with runc using apt
+              apt:
+                name:      cri-o-runc
+                state:     present
+              become:      true
+
+          when: cloud_images[clusters.definition[cluster_name].guest_os].package_manager == 'apt'
+
+        - name: CRIO setup -- Force systemd as crio cgroup manager
+          replace:
+            path: /etc/crio/crio.conf
+            regexp: '^cgroup_manager.*'
+            replace: 'cgroup_manager = "systemd"'
+
+        - name: CRIO setup -- Ensure systemd as crio common cgroup 
+          replace:
+            path: /etc/crio/crio.conf
+            regexp: '^conmon_cgroup.*'
+            replace: 'conmon_cgroup = "system.slice"'
+          
+        - name: CRIO setup -- Remove example CNI configs
+          file:
+            path: "/etc/cni/net.d/{{ item }}"
+            state: absent
+          loop:
+            - 100-crio-bridge.conf
+            - 200-loopback.conf
+          become:          true
+            
+        - name: CRIO setup -- Force systemd to reread configs 
+          command:         systemctl daemon-reload
+          become:          true
+
+        #
+        # https://github.com/ansible/ansible/issues/71528 => using shell command :-S
+        #
+        #   - name: CRIO setup -- Enable and start CRI-O daemon
+        #     systemd:
+        #       name:          crio
+        #       state:         started
+        #       enabled:       yes
+        #     become:          true
+        #
+        
+        - name: CRIO setup -- Enable CRI-O daemon
+          command: systemctl enable crio
+          become:          true
+
+        - name: CRIO setup -- Start CRI-O daemon
+          command: systemctl start crio
+          become:          true
+
+        - name: CRIO setup -- Check if reboot is required under Debian like VMs
+          stat:
+            path: /var/run/reboot-required
+          register: reboot_required
+          when:     cloud_images[clusters.definition[cluster_name].guest_os].package_reboot_check == 'reboot_required'
+          become:   true
+
+        - name: CRIO setup -- Check if reboot is required under Red Hat like VMs
+          shell:
+            cmd: needs-restarting -r
+          register: needs_restarting
+          when:     cloud_images[clusters.definition[cluster_name].guest_os].package_reboot_check == 'needs_restarting'
+          become:   true
+
+        - name: CRIO setup -- Reboot VMs if needed
+          reboot:
+            msg:               "Reboot initiated by Ansible as requested by /var/run/reboot-required or needs_restarting"
+            connect_timeout:   5
+            reboot_timeout:    120
+            pre_reboot_delay:  0
+            post_reboot_delay: 30
+            test_command:      whoami
+          become:   true
+          when: (reboot_required is defined and reboot_required.stat is defined and reboot_required.stat.exists)
+             or (needs_restarting is defined and needs_restarting.rc is defined and needs_restarting.rc != 0)
+
+        - name: CRIO setup -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+          lineinfile:
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            line:   "container_runtime=crio"
+          become:   true
+
+        - name: CRIO setup -- Reload the homelab-kubernetes-provisioner custom fact
+          setup:
+            filter: ansible_local          
+
+      when: 
+        - clusters.definition[cluster_name].container_runtime == 'crio'
+        - crio_packages[clusters.definition[cluster_name].guest_os] is defined
+        - crio_packages[clusters.definition[cluster_name].guest_os].supported is defined
+        - crio_packages[clusters.definition[cluster_name].guest_os].supported == True
+        - ansible_local['homelab-kubernetes-provisioner']['setup']['container_runtime'] is not defined

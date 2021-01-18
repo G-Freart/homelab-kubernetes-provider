@@ -1,0 +1,44 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+#---------------------------------------------------------------------
+#                         Global settings
+#---------------------------------------------------------------------
+
+global
+    log                     127.0.0.1 local0
+    chroot      	    /var/lib/haproxy
+    pidfile                 /var/run/haproxy.pid
+    maxconn                 4000
+    user                    haproxy
+    group                   haproxy
+    daemon
+    stats socket /var/lib/haproxy/stats
+
+#---------------------------------------------------------------------
+#  Common defaults that all the 'listen' and 'backend' sections will
+#            use if not designated in their block
+#---------------------------------------------------------------------
+
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    #option http-server-close
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+

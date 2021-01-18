@@ -1,0 +1,25 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+#---------------------------------------------------------------------
+#                 Kubernetes ingress http settings
+#---------------------------------------------------------------------
+
+frontend kubernetes_ingress_http
+    bind *:80
+    default_backend kubernetes_ingress_http
+    mode tcp
+    option tcplog
+
+backend kubernetes_ingress_http
+    balance source
+    mode tcp
+
+{% for node in groups['workers'] %}
+    server {{ hostvars[node].ansible_fqdn }} {{ hostvars[node].ansible_default_ipv4.address }}:{{ ingress_http_port }} check
+{% endfor %}

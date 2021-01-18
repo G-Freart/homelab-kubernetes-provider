@@ -1,0 +1,30 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook generate ssh key used to control guest VMs
+  hosts: kvm_host
+
+  vars_files:
+    - vars/default-settings.yaml
+    
+  tasks:
+
+    - name: Generate SSH Key -- Computing instance directory
+      set_fact:
+        instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
+        
+    - name: Generate SSH Key -- Check if keypair has already been generated
+      stat:
+        path:      "{{ instance_dir }}/{{ cluster_name }}/sshkey/id_rsa"
+      register:    keypair_result
+
+    - name: Generate SSH Key -- Create ssh keypair
+      openssh_keypair:
+        path:      "{{ instance_dir }}/{{ cluster_name }}/sshkey/id_rsa"
+      when:        keypair_result.stat.exists == False
+

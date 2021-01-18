@@ -1,0 +1,10 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+terraform_amd64_url:     https://releases.hashicorp.com/terraform/0.14.3/terraform_0.14.3_linux_amd64.zip
+terraform_arm64_url:     https://releases.hashicorp.com/terraform/0.14.3/terraform_0.14.3_linux_arm64.zip

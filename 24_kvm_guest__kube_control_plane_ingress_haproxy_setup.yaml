@@ -1,0 +1,130 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name:     This playbook will configure the ingress to be haproxy
+  hosts:    control_planes
+  run_once: true
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    - group_vars/kvm_guest/ingress.yaml
+    
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8.1 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.1.yaml
+            name:        c81
+        - name: Loading CentOS 8.2 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.2.yaml
+            name:        c82
+        - name: Loading CentOS 8.3 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8.3.yaml
+            name:        c83
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 18.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-18.04.yaml
+            name:        u1804
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name:  Kube setup haproxy ingress -- Current provisioning facts of the VMs 
+      debug:
+        var: ansible_local['homelab-kubernetes-provisioner']
+
+    - name:  Kube setup haproxy ingress -- Computing instance directory
+      set_fact:
+        instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
+        
+    - name:  Kube setup haproxy ingress -- Configure the first control plane
+      block:
+
+        - name:       Kube setup haproxy ingress -- Downloading haproxy ingress definition
+          get_url:    
+            url:      "{{ ingress.haproxy.k8s_definition_url }}"
+            dest:     /tmp/haproxy_ingress.yaml
+
+        - name:       Kube setup haproxy ingress -- Asking to kubernetes to apply the haproxy ingress
+          command:    kubectl apply -f /tmp/haproxy_ingress.yaml
+
+        - name:       Kube setup haproxy ingress  -- Waiting until ingress pod has been created
+          shell:      "kubectl get po --namespace=haproxy-controller --output=jsonpath='{.items[*].metadata.name}'"
+          register:   pods_creation_checking
+          until:      item in pods_creation_checking.stdout
+          delay:      10
+          with_items:
+            - "haproxy-ingress"
+            - "ingress-default-backend"
+          retries:    30
+
+        - name:       Kube setup haproxy ingress -- Waiting until ingress pods readiness
+          shell:      "kubectl wait --namespace=haproxy-controller --for=condition=Ready pods --all --timeout=600s"
+          register:   pods_readiness_checking
+
+        - name:       Kube setup haproxy ingress -- Retreiving ingress port
+          shell:      kubectl get svc haproxy-ingress -n haproxy-controller -o jsonpath='{..spec.ports[?(@.name=="{{ item }}")].nodePort}'
+          loop:
+            - http
+            - https
+          register:   ports
+
+        - name: Kube setup haproxy ingress -- Storing the http ingress port
+          copy:
+            dest:      "{{ instance_dir }}/{{ cluster_name }}/kubelet/ingress_http_port.txt"
+            content:   "{{ ports.results[0].stdout }}"
+          delegate_to: localhost
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+
+        - name: Kube setup haproxy ingress -- Storing the https ingress port
+          copy:
+            dest:      "{{ instance_dir }}/{{ cluster_name }}/kubelet/ingress_https_port.txt"
+            content:   "{{ ports.results[1].stdout }}"
+          delegate_to: localhost
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+
+        - name:       Kube setup haproxy ingress -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+          lineinfile:
+            path:     /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            line:     kube_ingress=haproxy
+          become:     true
+  
+        - name:       Kube setup haproxy ingress -- Reload the homelab-kubernetes-provisioner custom fact
+          setup:
+            filter:   ansible_local          
+
+      when: 
+        - clusters.definition[cluster_name].ingress is defined
+        - clusters.definition[cluster_name].ingress == 'haproxy'
+        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_ingress'] is not defined
