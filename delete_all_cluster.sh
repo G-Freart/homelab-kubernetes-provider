@@ -9,14 +9,14 @@
 # ------------------------------------------------------------------------------------------ #
 
 original_pwd=`pwd`
-iso_node_path=`cat group_vars/kvm_host/libvirt_setup.yaml | grep -e "libvirt_node_image_path"   | sed "s/^[^:]*\:\ *//"`
-storage_path=` cat group_vars/kvm_host/libvirt_setup.yaml | grep -e "libvirt_storage_pool_path" | sed "s/^[^:]*\:\ *//"`
+iso_node_path=`cat vars/default-settings.yaml | grep -e "libvirt_node_image_path"   | sed "s/^[^:]*\:\ *//"`
+storage_path=` cat vars/default-settings.yaml | grep -e "libvirt_storage_pool_path" | sed "s/^[^:]*\:\ *//"`
 
 if [ -d "instances" ]
 then
   instance=$original_pwd/instances/`cat /var/lib/dbus/machine-id`
 
-  if [ -d "instance" ]
+  if [ -d "${instance}" ]
   then
     cd ${instance}
 
@@ -54,7 +54,10 @@ then
         rm -rf ${instance}/${cluster_name}
       fi
     done
+
+    rm -rf ${instance}
+
+    cd $original_pwd
   fi
 
-  cd $original_pwd
 fi

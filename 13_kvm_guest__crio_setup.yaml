@@ -59,7 +59,7 @@
 
     - name:  CRIO setup -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name:  CRIO setup -- Install CRI-O if whished
       block:
@@ -266,13 +266,13 @@
           when: (reboot_required is defined and reboot_required.stat is defined and reboot_required.stat.exists)
              or (needs_restarting is defined and needs_restarting.rc is defined and needs_restarting.rc != 0)
 
-        - name: CRIO setup -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: CRIO setup -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   "container_runtime=crio"
           become:   true
 
-        - name: CRIO setup -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: CRIO setup -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
@@ -281,4 +281,4 @@
         - crio_packages[clusters.definition[cluster_name].guest_os] is defined
         - crio_packages[clusters.definition[cluster_name].guest_os].supported is defined
         - crio_packages[clusters.definition[cluster_name].guest_os].supported == True
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['container_runtime'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['container_runtime'] is not defined

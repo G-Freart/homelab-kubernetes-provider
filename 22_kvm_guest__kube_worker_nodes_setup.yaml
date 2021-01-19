@@ -58,7 +58,7 @@
 
     - name:  Kube setup worker nodes -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name: Kube setup worker nodes -- Computing instance directory
       set_fact:
@@ -107,16 +107,16 @@
           when: clusters.definition[cluster_name].control_planes.vms == 1
           become: true
 
-        - name: Kube setup worker nodes  -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: Kube setup worker nodes  -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   "kube_node_type=worker"
           become:   true
   
-        - name: Kube setup worker nodes -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Kube setup worker nodes -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
       when: 
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_node_type'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['kube_node_type'] is not defined
         - inventory_hostname != groups['control_planes'][0]

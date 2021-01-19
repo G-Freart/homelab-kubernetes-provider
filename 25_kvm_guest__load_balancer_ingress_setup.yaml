@@ -59,7 +59,7 @@
 
     - name:  Load Balancer ingress setup -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name:  Load balancer ingress setup -- Computing instance directory
       set_fact:
@@ -89,13 +89,13 @@
           command: systemctl restart haproxy
           become:          true
 
-        - name: Load balancer ingress setup -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: Load balancer ingress setup -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   "ingress=true"
           become:   true
 
-        - name: Load balancer ingress setup -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Load balancer ingress setup -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
@@ -104,4 +104,4 @@
         - load_balancer_packages[clusters.definition[cluster_name].guest_os] is defined
         - load_balancer_packages[clusters.definition[cluster_name].guest_os].supported is defined
         - load_balancer_packages[clusters.definition[cluster_name].guest_os].supported == True
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['ingress'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['ingress'] is not defined

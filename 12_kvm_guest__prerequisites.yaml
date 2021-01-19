@@ -59,7 +59,7 @@
 
     - name: Prerequisites -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name: Prerequisites -- Create directory for ansible custom facts
       file:
@@ -68,20 +68,20 @@
         path:       /etc/ansible/facts.d
       become: true
 
-    - name: Prerequisites -- Check if homelab-kubernetes-provisioner custom fact exists
+    - name: Prerequisites -- Check if homelab-kubernetes-provider custom fact exists
       block:
-        - name : Prerequisites -- Create the homelab-kubernetes-provisioner fact
+        - name : Prerequisites -- Create the homelab-kubernetes-provider fact
           copy:
-            dest: /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            dest: /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             content: |
               [setup]
           become: true
 
-        - name: Prerequisites -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Prerequisites -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
-      when: ansible_local['homelab-kubernetes-provisioner'] is not defined
+      when: ansible_local['homelab-kubernetes-provider'] is not defined
 
     - name : Prerequisites -- Apply prerequisites if not yet executed
       block:
@@ -149,16 +149,16 @@
           when: (reboot_required is defined and reboot_required.stat is defined and reboot_required.stat.exists)
              or (needs_restarting is defined and needs_restarting.rc is defined and needs_restarting.rc != 0)
 
-        - name: Prerequisites -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: Prerequisites -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   "prerequisite=true"
           become:   true
           when:     result is succeeded
 
-        - name: Prerequisites -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Prerequisites -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
-      when: ansible_local['homelab-kubernetes-provisioner']['setup']['prerequisite'] is not defined
-         or ansible_local['homelab-kubernetes-provisioner']['setup']['prerequisite'] != 'true'
+      when: ansible_local['homelab-kubernetes-provider']['setup']['prerequisite'] is not defined
+         or ansible_local['homelab-kubernetes-provider']['setup']['prerequisite'] != 'true'

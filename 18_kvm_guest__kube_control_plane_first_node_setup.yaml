@@ -59,7 +59,7 @@
 
     - name:  Kube setup first control plane -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name: Kube setup first control plane -- Computing instance directory
       set_fact:
@@ -219,16 +219,16 @@
           shell:      "kubectl wait pods --namespace=kube-system --selector tier=control-plane --for=condition=Ready --timeout=600s"
           register:   pods_readiness_checking
 
-        - name: Kube setup first control plane -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: Kube setup first control plane -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   "kube_node_type=control plane"
           become:   true
 
-        - name: Kube setup first control plane -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Kube setup first control plane -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
       when: 
         - inventory_hostname == groups['control_planes'][0]
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_node_type'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['kube_node_type'] is not defined

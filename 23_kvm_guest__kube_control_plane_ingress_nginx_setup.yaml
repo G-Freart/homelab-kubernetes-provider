@@ -60,7 +60,7 @@
 
     - name:  Kube setup nginx ingress -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name:  Kube setup nginx ingress -- Computing instance directory
       set_fact:
@@ -115,17 +115,17 @@
           vars:
             ansible_python_interpreter: /usr/bin/python3
 
-        - name:       Kube setup nginx ingress -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name:       Kube setup nginx ingress -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:     /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:     /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:     kube_ingress=nginx
           become:     true
   
-        - name:       Kube setup nginx ingress -- Reload the homelab-kubernetes-provisioner custom fact
+        - name:       Kube setup nginx ingress -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter:   ansible_local          
 
       when: 
         - clusters.definition[cluster_name].ingress is defined
         - clusters.definition[cluster_name].ingress == 'nginx'
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_ingress'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['kube_ingress'] is not defined

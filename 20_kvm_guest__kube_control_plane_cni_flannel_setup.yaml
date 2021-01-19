@@ -60,7 +60,7 @@
 
     - name:  Kube setup flannel network plugin -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name:  Kube setup flannel network plugin -- Configure the first control plane
       block:
@@ -106,17 +106,17 @@
           register:   pods_readiness_checking
 
 
-        - name: Kube setup flannel network plugin -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: Kube setup flannel network plugin -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   kube_network_plugin=flannel
           become:   true
   
-        - name: Kube setup flannel network plugin -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Kube setup flannel network plugin -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
       when: 
         - inventory_hostname == groups['control_planes'][0]
         - clusters.definition[cluster_name].cni_plugin == 'flannel'
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['kube_network_plugin'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['kube_network_plugin'] is not defined

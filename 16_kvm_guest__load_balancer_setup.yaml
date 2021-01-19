@@ -59,7 +59,7 @@
 
     - name:  Load Balancer setup -- Current provisioning facts of the VMs 
       debug:
-        var: ansible_local['homelab-kubernetes-provisioner']
+        var: ansible_local['homelab-kubernetes-provider']
 
     - name:  Load balancer setup -- Configure load balancer VMs
       block:
@@ -362,13 +362,13 @@
           when: (reboot_required is defined and reboot_required.stat is defined and reboot_required.stat.exists)
              or (needs_restarting is defined and needs_restarting.rc is defined and needs_restarting.rc != 0)
 
-        - name: Load balancer setup -- Storing new state inside the homelab-kubernetes-provisioner custom fact
+        - name: Load balancer setup -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
-            path:   /etc/ansible/facts.d/homelab-kubernetes-provisioner.fact
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
             line:   "load_balancer=haproxy"
           become:   true
 
-        - name: Load balancer setup -- Reload the homelab-kubernetes-provisioner custom fact
+        - name: Load balancer setup -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter: ansible_local          
 
@@ -377,4 +377,4 @@
         - load_balancer_packages[clusters.definition[cluster_name].guest_os] is defined
         - load_balancer_packages[clusters.definition[cluster_name].guest_os].supported is defined
         - load_balancer_packages[clusters.definition[cluster_name].guest_os].supported == True
-        - ansible_local['homelab-kubernetes-provisioner']['setup']['load_balancer'] is not defined
+        - ansible_local['homelab-kubernetes-provider']['setup']['load_balancer'] is not defined
