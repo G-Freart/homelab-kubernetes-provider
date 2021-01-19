@@ -14,11 +14,11 @@ storage_path=` cat vars/default-settings.yaml | grep -e "libvirt_storage_pool_pa
 
 if [ -d "instances" ]
 then
-  instance=$original_pwd/instances/`cat /var/lib/dbus/machine-id`
+  instances=$original_pwd/instances/`cat /var/lib/dbus/machine-id`
 
-  if [ -d "${instance}" ]
+  if [ -d "${instances}" ]
   then
-    cd ${instance}
+    cd ${instances}
 
     for cluster_name in * ;
     do
@@ -26,21 +26,21 @@ then
       then	    
         echo "Processing cluster $cluster_name at folder `pwd`"
   
-        for terraform_repo_name in control_plane worker load_balancer ;
+        for terraform_repo_name in `ls -d ${instances}/${cluster_name}/terraform/*/` ;
         do
-          echo "  Check existenz at ${instance}/${cluster_name}/terraform/${terraform_repo_name}"
+          echo "  Check existenz at ${terraform_repo_name}"
   
-          if [ -d ${instance}/${cluster_name}/terraform/${terraform_repo_name} ]
+          if [ -d ${terraform_repo_name} ]
           then
-            echo "    Terraform destroying $cluster_name -> $terraform_repo_name"
+            echo "    Terraform destroying $cluster_name -> `basename $terraform_repo_name`"
     
-            cd ${instance}/${cluster_name}/terraform/${terraform_repo_name}
+            cd ${terraform_repo_name}
     
       	  echo yes | terraform destroy
     
           echo "    Deleting terraform folder"
   
-    	  rm -rf ${instance}/${cluster_name}/terraform/${terraform_repo_name}
+    	  rm -rf ${terraform_repo_name}
           fi
         done
   
@@ -51,11 +51,9 @@ then
         sudo rm -rf ${iso_node_path}/${cluster_name}
         sudo rm -rf ${storage_path}/${cluster_name}
     
-        rm -rf ${instance}/${cluster_name}
+        rm -rf ${instances}/${cluster_name}
       fi
     done
-
-    rm -rf ${instance}
 
     cd $original_pwd
   fi
