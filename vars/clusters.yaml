@@ -24,7 +24,7 @@ definition:
       disk:             30
 
     worker_nodes:
-      vms:              3
+      vms:              5
       vcpu:             3
       mem:              12
       disk:             60

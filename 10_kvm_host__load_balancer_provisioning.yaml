@@ -44,6 +44,10 @@
       set_fact:
         instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
         
+    - name: Load balancer provisionning -- Retreiving password
+      set_fact:
+        password:                      "{{ lookup ('file', instance_dir + '/' + cluster_name + '/secret/password.txt') }}"
+
     - terraform:
         project_path:                  "{{ instance_dir }}/{{ cluster_name }}/terraform/load_balancer"
         force_init:                    true

@@ -42,8 +42,12 @@
 
     - name: Control Plane provisionning -- Computing instance directory
       set_fact:
-        instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
-        
+        instance_dir:                  "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
+
+    - name: Control Plane provisionning -- Retreiving password
+      set_fact:
+        password:                      "{{ lookup ('file', instance_dir + '/' + cluster_name + '/secret/password.txt') }}"
+
     - terraform:
         project_path:                  "{{ instance_dir }}/{{ cluster_name }}/terraform/control_plane"
         force_init:                    true

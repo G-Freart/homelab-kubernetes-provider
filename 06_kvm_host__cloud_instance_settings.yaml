@@ -69,6 +69,13 @@
         - "worker"
         - "load_balancer"
 
+    - name: "Cloud instance setting -- Creating secret directory"
+      file:
+        path:            "{{ instance_dir }}/{{ cluster_name }}/secret/"
+        state:           directory
+        mode:            "0700"
+      when:              tgt_dir.stat.exists == False
+
     - name: "Cloud instance setting -- Preparing terraform templates"
       block:
         - name: "Cloud instance setting -- Preparing terraform templates - copying all files"
@@ -114,5 +121,15 @@
             - "control_plane"
             - "worker"
             - "load_balancer"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - Generating guest password"
+          set_fact:
+            password:        "{{ lookup('password', '/dev/null chars=ascii_letters,digits,punctuation length=16') }}"
+          when:              password is not defined
+
+        - name: Kube setup first control plane -- Retreiving the k8s token within the cluster instance info
+          copy:
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/secret/password.txt"
+            content:         "{{ password }}"
 
       when:              tgt_dir.stat.exists == False
