@@ -7,17 +7,7 @@
 # ------------------------------------------------------------------------------------------ #
 
 kube_packages:
-  "Ubuntu 18.04":
-    supported:                  True
-    kube_key_cmd:               "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"
-    kube_repo_cmd:              "echo \"deb https://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee /etc/apt/sources.list.d/kubernetes.list"
-    apt_list:
-      - { state: "present", name: "kubelet"                 }  
-      - { state: "present", name: "kubeadm"                 }  
-      - { state: "present", name: "kubectl"                 }  
-
   "Ubuntu 20.04":
-    supported:                  True
     kube_key_cmd:               "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"
     kube_repo_cmd:              "echo \"deb https://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee /etc/apt/sources.list.d/kubernetes.list"
     apt_list:
@@ -26,7 +16,6 @@ kube_packages:
       - { state: "present", name: "kubectl"                 }  
 
   "Ubuntu 20.10":
-    supported:                  True
     kube_key_cmd:               "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"
     kube_repo_cmd:              "echo \"deb https://apt.kubernetes.io/ kubernetes-xenial  main\" | sudo tee /etc/apt/sources.list.d/kubernetes.list"
     apt_list:
@@ -35,38 +24,12 @@ kube_packages:
       - { state: "present", name: "kubectl"                 }  
 
   "CentOS 7":
-    supported:                  True
     yum_list:
-      - { state: "present", name: "kubelet"                 }  
-      - { state: "present", name: "kubeadm"                 }  
-      - { state: "present", name: "kubectl"                 }  
-
-  "CentOS 8.1":
-    supported:                  True
-    yum_list:
-      - { state: "present", name: "iproute-tc"              }  
-      - { state: "present", name: "kubelet"                 }  
-      - { state: "present", name: "kubeadm"                 }  
-      - { state: "present", name: "kubectl"                 }  
-
-  "CentOS 8.2":
-    supported:                  True
-    yum_list:
-      - { state: "present", name: "iproute-tc"              }  
-      - { state: "present", name: "kubelet"                 }  
-      - { state: "present", name: "kubeadm"                 }  
-      - { state: "present", name: "kubectl"                 }  
-
-  "CentOS 8.3":
-    supported:                  True
-    yum_list:
-      - { state: "present", name: "iproute-tc"              }  
       - { state: "present", name: "kubelet"                 }  
       - { state: "present", name: "kubeadm"                 }  
       - { state: "present", name: "kubectl"                 }  
 
   "CentOS 8 Stream":
-    supported:                  True
     yum_list:
       - { state: "present", name: "iproute-tc"              }  
       - { state: "present", name: "kubelet"                 }  

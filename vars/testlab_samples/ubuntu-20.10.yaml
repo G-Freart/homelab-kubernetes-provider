@@ -30,9 +30,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -63,9 +77,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -96,9 +124,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -129,9 +171,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -162,9 +218,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -195,9 +265,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -228,9 +312,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -261,9 +359,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -294,9 +406,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -327,9 +453,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -360,9 +500,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3
@@ -393,9 +547,23 @@ definition:
 
     load_balancers:
       vms:              1
-      vcpu:             2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3

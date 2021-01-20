@@ -6,7 +6,7 @@
 #                                                                                            #
 # ------------------------------------------------------------------------------------------ #
 
-- name:     This playbook will configure the ingress to be nginx
+- name:     This playbook will configure the ingress to be haproxy
   hosts:    control_planes
   run_once: true
 
@@ -22,26 +22,10 @@
           include_vars:
             file:        vars/testlab_samples/centos-7.yaml
             name:        c7x
-        - name: Loading CentOS 8.1 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.1.yaml
-            name:        c81
-        - name: Loading CentOS 8.2 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.2.yaml
-            name:        c82
-        - name: Loading CentOS 8.3 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.3.yaml
-            name:        c83
         - name: Loading CentOS 8 Stream cluster samples
           include_vars:
             file:        vars/testlab_samples/centos-8-stream.yaml
             name:        c8s
-        - name: Loading Ubuntu 18.04 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/ubuntu-18.04.yaml
-            name:        u1804
         - name: Loading Ubuntu 20.04 cluster samples
           include_vars:
             file:        vars/testlab_samples/ubuntu-20.04.yaml
@@ -56,50 +40,49 @@
             name:        custo
         - name: Merging all cluster definitions
           set_fact:
-            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c8s, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
 
-    - name:  Kube setup nginx ingress -- Current provisioning facts of the VMs 
+    - name:  Kube setup haproxy ingress -- Current provisioning facts of the VMs 
       debug:
         var: ansible_local['homelab-kubernetes-provider']
 
-    - name:  Kube setup nginx ingress -- Computing instance directory
+    - name:  Kube setup haproxy ingress -- Computing instance directory
       set_fact:
         instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
         
-    - name:  Kube setup nginx ingress -- Configure the first control plane
+    - name:  Kube setup haproxy ingress -- Configure the first control plane
       block:
 
-        - name:       Kube setup nginx ingress -- Downloading nginx ingress definition
+        - name:       Kube setup haproxy ingress -- Downloading haproxy ingress definition
           get_url:    
-            url:      "{{ ingress.nginx.k8s_definition_url }}"
-            dest:     /tmp/nginx_ingress.yaml
+            url:      "{{ ingress.haproxy.k8s_definition_url }}"
+            dest:     /tmp/haproxy_ingress.yaml
 
-        - name:       Kube setup nginx ingress -- Asking to kubernetes to apply the nginx ingress
-          command:    kubectl apply -f /tmp/nginx_ingress.yaml
+        - name:       Kube setup haproxy ingress -- Asking to kubernetes to apply the haproxy ingress
+          command:    kubectl apply -f /tmp/haproxy_ingress.yaml
 
-        - name:       Kube setup nginx ingress  -- Waiting until ingress pod has been created
-          shell:      "kubectl get pods --namespace=ingress-nginx --output=jsonpath='{.items[*].metadata.name}'"
+        - name:       Kube setup haproxy ingress  -- Waiting until ingress pod has been created
+          shell:      "kubectl get po --namespace=haproxy-controller --output=jsonpath='{.items[*].metadata.name}'"
           register:   pods_creation_checking
           until:      item in pods_creation_checking.stdout
           delay:      10
           with_items:
-            - "ingress-nginx-admission-create"
-            - "ingress-nginx-admission-patch"
-            - "ingress-nginx-controller"
+            - "haproxy-ingress"
+            - "ingress-default-backend"
           retries:    30
 
-        - name:       Kube setup nginx ingress -- Waiting until ingress pods readiness
-          shell:      "kubectl wait --namespace=ingress-nginx --for=condition=Ready pods --selector app.kubernetes.io/component=controller  --timeout=600s"
+        - name:       Kube setup haproxy ingress -- Waiting until ingress pods readiness
+          shell:      "kubectl wait --namespace=haproxy-controller --for=condition=Ready pods --all --timeout=600s"
           register:   pods_readiness_checking
 
-        - name:       Kube setup nginx ingress -- Retreiving ingress port
-          shell:      kubectl get svc ingress-nginx-controller  -n ingress-nginx -o jsonpath='{..spec.ports[?(@.name=="{{ item }}")].nodePort}'
+        - name:       Kube setup haproxy ingress -- Retreiving ingress port
+          shell:      kubectl get svc haproxy-ingress -n haproxy-controller -o jsonpath='{..spec.ports[?(@.name=="{{ item }}")].nodePort}'
           loop:
             - http
             - https
           register:   ports
 
-        - name: Kube setup nginx ingress -- Storing the http ingress port
+        - name: Kube setup haproxy ingress -- Storing the http ingress port
           copy:
             dest:      "{{ instance_dir }}/{{ cluster_name }}/kubelet/ingress_http_port.txt"
             content:   "{{ ports.results[0].stdout }}"
@@ -107,7 +90,7 @@
           vars:
             ansible_python_interpreter: /usr/bin/python3
 
-        - name: Kube setup nginx ingress -- Storing the https ingress port
+        - name: Kube setup haproxy ingress -- Storing the https ingress port
           copy:
             dest:      "{{ instance_dir }}/{{ cluster_name }}/kubelet/ingress_https_port.txt"
             content:   "{{ ports.results[1].stdout }}"
@@ -115,17 +98,17 @@
           vars:
             ansible_python_interpreter: /usr/bin/python3
 
-        - name:       Kube setup nginx ingress -- Storing new state inside the homelab-kubernetes-provider custom fact
+        - name:       Kube setup haproxy ingress -- Storing new state inside the homelab-kubernetes-provider custom fact
           lineinfile:
             path:     /etc/ansible/facts.d/homelab-kubernetes-provider.fact
-            line:     kube_ingress=nginx
+            line:     kube_ingress=haproxy
           become:     true
   
-        - name:       Kube setup nginx ingress -- Reload the homelab-kubernetes-provider custom fact
+        - name:       Kube setup haproxy ingress -- Reload the homelab-kubernetes-provider custom fact
           setup:
             filter:   ansible_local          
 
       when: 
         - clusters.definition[cluster_name].ingress is defined
-        - clusters.definition[cluster_name].ingress == 'nginx'
+        - clusters.definition[cluster_name].ingress == 'haproxy'
         - ansible_local['homelab-kubernetes-provider']['setup']['kube_ingress'] is not defined

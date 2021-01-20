@@ -20,26 +20,10 @@
           include_vars:
             file:        vars/testlab_samples/centos-7.yaml
             name:        c7x
-        - name: Loading CentOS 8.1 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.1.yaml
-            name:        c81
-        - name: Loading CentOS 8.2 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.2.yaml
-            name:        c82
-        - name: Loading CentOS 8.3 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.3.yaml
-            name:        c83
         - name: Loading CentOS 8 Stream cluster samples
           include_vars:
             file:        vars/testlab_samples/centos-8-stream.yaml
             name:        c8s
-        - name: Loading Ubuntu 18.04 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/ubuntu-18.04.yaml
-            name:        u1804
         - name: Loading Ubuntu 20.04 cluster samples
           include_vars:
             file:        vars/testlab_samples/ubuntu-20.04.yaml
@@ -54,7 +38,7 @@
             name:        custo
         - name: Merging all cluster definitions
           set_fact:
-            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c8s, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
 
     - name:  Kube setup others control plane -- Current provisioning facts of the VMs 
       debug:
@@ -91,9 +75,25 @@
           shell:     kubeadm config images pull
           become:    true
 
+        - name: Kube setup others control plane -- Computing control plane endpoint as VIP if available
+          set_fact: control_plane_endpoint_address="{{ clusters.definition[cluster_name].load_balancers.vrrp.internal.vip | ipaddr('address') }}"
+          when:     
+            - clusters.definition[cluster_name].load_balancers.vrrp              is defined
+            - clusters.definition[cluster_name].load_balancers.vrrp.internal     is defined 
+            - clusters.definition[cluster_name].load_balancers.vrrp.internal.vip is defined
+
+        - name: Kube setup others control plane -- Computing control plane endpoint as server ip if vip not available
+          set_fact: control_plane_endpoint_address="{{ hostvars[groups['load_balancers'][0]].inventory_hostname }}"
+          when:     
+            - control_plane_endpoint_address is not defined
+
+        - name: Kube setup others control plane -- Output of the control plane endpoint address
+          debug:
+            var: control_plane_endpoint_address 
+
         - name: Kube setup others control plane -- Joining cluster
           shell: >
-            kubeadm join {{ hostvars[groups['load_balancers'][0]].inventory_hostname }}:6443
+            kubeadm join {{ control_plane_endpoint_address }}:6443
             --token {{ lookup ('file', instance_dir + '/' + cluster_name + '/kubelet/kubelet_token.txt') }} 
             --discovery-token-ca-cert-hash sha256:{{ lookup ('file', instance_dir + '/' + cluster_name + '/kubelet/kubelet_ca_hash.txt') }} 
             --control-plane 

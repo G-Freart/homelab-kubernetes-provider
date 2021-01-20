@@ -29,10 +29,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -63,10 +77,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -96,10 +124,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -129,10 +171,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -162,10 +218,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -195,10 +265,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -228,10 +312,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -261,10 +359,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -294,10 +406,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -327,10 +453,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -360,10 +500,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0
@@ -393,10 +547,24 @@ definition:
       disk:             30
 
     load_balancers:
-      vms:              1
-      vcpu:             2
+      vms:              2
+      vcpu:             1
       mem:              2
       disk:             20
+      vrrp:
+
+        internal:
+          iface:        eth0
+          route_id:     1
+          vip:          192.168.150.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        eth1
+          route_id:     2
+          vip:          192.168.0.104/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            eth0

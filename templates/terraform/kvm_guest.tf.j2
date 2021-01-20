@@ -84,6 +84,12 @@ resource "libvirt_domain" "VMs" {
     network_name = var.libvirt_network
   }
 
+{% if secondary_network is defined and item == secondary_item_type %}
+  network_interface {
+    network_name = "{{ secondary_network }}"
+  }
+
+{% endif %}
   cloudinit = libvirt_cloudinit_disk.common_init[count.index].id
 
   console {

@@ -12,53 +12,15 @@
 #   https://github.com/cri-o/cri-o/blob/master/install.md#install-packaged-versions-of-cri-o
 #
 containerd_packages:
-  "Ubuntu 18.04":
-    supported:                  True
-#   apt_prerequisite_list:
-    apt_containerd_list:
-      - { state: "present", name: "containerd"         		        }
-
   "Ubuntu 20.04":
-    supported:                  True
-#   apt_prerequisite_list:
     apt_containerd_list:
       - { state: "present", name: "containerd"         		        }
 
   "Ubuntu 20.10":
-    supported:                  True
-#   apt_prerequisite_list:
     apt_containerd_list:
       - { state: "present", name: "containerd"         		        }
 
   "CentOS 7":
-    supported:                  True
-    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
-    yum_prerequisite_list:
-      - { state: "present", name: "device-mapper-persistent-data"       }  
-      - { state: "present", name: "lvm2"         			}  
-    yum_containerd_list:
-      - { state: "present", name: "containerd.io"       		}
-
-  "CentOS 8.1":
-    supported:                  True
-    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
-    yum_prerequisite_list:
-      - { state: "present", name: "device-mapper-persistent-data"       }  
-      - { state: "present", name: "lvm2"         			}  
-    yum_containerd_list:
-      - { state: "present", name: "containerd.io"       		}
-
-  "CentOS 8.2":
-    supported:                  True
-    repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
-    yum_prerequisite_list:
-      - { state: "present", name: "device-mapper-persistent-data"       }  
-      - { state: "present", name: "lvm2"         			}  
-    yum_containerd_list:
-      - { state: "present", name: "containerd.io"       		}
-
-  "CentOS 8.3":
-    supported:                  True
     repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
     yum_prerequisite_list:
       - { state: "present", name: "device-mapper-persistent-data"       }  
@@ -67,7 +29,6 @@ containerd_packages:
       - { state: "present", name: "containerd.io"       		}
 
   "CentOS 8 Stream":
-    supported:                  True
     repo_docker_ce_url:         "https://download.docker.com/linux/centos/docker-ce.repo"
     yum_prerequisite_list:
       - { state: "present", name: "device-mapper-persistent-data"       }  

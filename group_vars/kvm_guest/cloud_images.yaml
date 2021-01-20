@@ -7,20 +7,7 @@
 # ------------------------------------------------------------------------------------------ #
 
 cloud_images:
-  "Ubuntu 18.04":
-    supported:                  True
-    application_security:       apparmor
-    application_firewall:       ufw
-    package_manager:            apt
-    package_reboot_check:       reboot_required
-    cloud_init_file:            cloud_init_ubuntu.cfg
-    kubelet_extra_arg_file:     /etc/default/kubelet
-    haproxy_extra_arg_file:     /etc/default/haproxy
-    image_name:                 Ubuntu-18.04-CloudImage
-    url:                        https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64.img
-
   "Ubuntu 20.04":
-    supported:                  True
     application_security:       apparmor
     application_firewall:       ufw
     package_manager:            apt
@@ -32,7 +19,6 @@ cloud_images:
     url:                        https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img
 
   "Ubuntu 20.10":
-    supported:                  True
     application_security:       apparmor
     application_firewall:       ufw
     package_manager:            apt
@@ -44,7 +30,6 @@ cloud_images:
     url:                        https://cloud-images.ubuntu.com/releases/groovy/release/ubuntu-20.10-server-cloudimg-amd64.img
 
   "CentOS 7":
-    supported:                  True
     application_security:       selinux
     application_firewall:       firewalld
     package_manager:            yum
@@ -55,44 +40,7 @@ cloud_images:
     image_name:                 CentOS-7-GenericCloud
     url:                        https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 
-  "CentOS 8.1":
-    supported:                  True
-    application_security:       selinux
-    application_firewall:       firewalld
-    package_manager:            yum
-    package_reboot_check:       needs_restarting
-    cloud_init_file:            cloud_init_centos.cfg
-    kubelet_extra_arg_file:     /etc/sysconfig/kubelet
-    haproxy_extra_arg_file:     /etc/sysconfig/haproxy
-    image_name:                 CentOS-8.1-GenericCloud
-    url:                        https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2
-
-  "CentOS 8.2":
-    supported:                  True
-    application_security:       selinux
-    application_firewall:       firewalld
-    package_manager:            yum
-    package_reboot_check:       needs_restarting
-    cloud_init_file:            cloud_init_centos.cfg
-    kubelet_extra_arg_file:     /etc/sysconfig/kubelet
-    haproxy_extra_arg_file:     /etc/sysconfig/haproxy
-    image_name:                 CentOS-8.2-GenericCloud
-    url:                        https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.2.2004-20200611.2.x86_64.qcow2
-
-  "CentOS 8.3":
-    supported:                  True
-    application_security:       selinux
-    application_firewall:       firewalld
-    package_manager:            yum
-    package_reboot_check:       needs_restarting
-    cloud_init_file:            cloud_init_centos.cfg
-    kubelet_extra_arg_file:     /etc/sysconfig/kubelet
-    haproxy_extra_arg_file:     /etc/sysconfig/haproxy
-    image_name:                 CentOS-8.3-GenericCloud
-    url:                        https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.3.2011-20201204.2.x86_64.qcow2
-
   "CentOS 8 Stream":
-    supported:                  True
     application_security:       selinux
     application_firewall:       firewalld
     package_manager:            yum

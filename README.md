@@ -51,6 +51,21 @@ definition:
       mem:              4
       disk:             30
 
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.1.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.103/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
+
     network:
       iface:            ens3
       network_cidr:     192.168.1.0/24
@@ -64,13 +79,9 @@ definition:
 In this file, andromeda is the name of the cluster.
 
 Guest OS which are defined inside the files /groups_vars_kvm_guest/cloud_images.yaml, could have one of the following value :
-* Ubuntu 18.04
 * Ubuntu 20.04
 * Ubuntu 20.10
 * CentOS 7
-* CentOS 8.1
-* CentOS 8.2
-* CentOS 8.3
 * CentOS 8 Stream
 
 Container Runtime could have one of the following value :

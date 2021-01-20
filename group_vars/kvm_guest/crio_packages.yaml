@@ -12,17 +12,7 @@
 #   https://github.com/cri-o/cri-o/blob/master/install.md#install-packaged-versions-of-cri-o
 #
 crio_packages:
-  "Ubuntu 18.04":
-    supported:                  True
-    os:                         "xUbuntu_18.04"
-    version:                    "1.20"
-    repo_lib_container_url:     "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/"
-    repo_lib_container_key_cmd: "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/$OS/Release.key | apt-key add -"
-    repo_crio_url:              "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/"
-    repo_crio_key_cmd:          "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key | apt-key add -"
-
   "Ubuntu 20.04":
-    supported:                  True
     os:                         "xUbuntu_20.04"
     version:                    "1.20"
     repo_lib_container_url:     "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/"
@@ -31,7 +21,6 @@ crio_packages:
     repo_crio_key_cmd:          "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key | apt-key add -"
 
   "Ubuntu 20.10":
-    supported:                  True
     os:                         "xUbuntu_20.10"
     version:                    "1.18"
     repo_lib_container_url:     "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/"
@@ -40,36 +29,13 @@ crio_packages:
     repo_crio_key_cmd:          "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key | apt-key add -"
 
   "CentOS 7":
-    supported:                  True
     os:                         "CentOS_7"
     version:                    "1.20"
     may_detach_mounts:          True
     repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"
     repo_cri_versioned_url:     "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo"
 
-  "CentOS 8.1":
-    supported:                  True
-    os:                         "CentOS_8"
-    version:                    "1.19"
-    repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"
-    repo_cri_versioned_url:     "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo"
-
-  "CentOS 8.2":
-    supported:                  True
-    os:                         "CentOS_8"
-    version:                    "1.19"
-    repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"
-    repo_cri_versioned_url:     "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo"
-
-  "CentOS 8.3":
-    supported:                  True
-    os:                         "CentOS_8"
-    version:                    "1.19"
-    repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"
-    repo_cri_versioned_url:     "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo"
-
   "CentOS 8 Stream":
-    supported:                  True
     os:                         "CentOS_8_Stream"
     version:                    "1.19"
     repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"

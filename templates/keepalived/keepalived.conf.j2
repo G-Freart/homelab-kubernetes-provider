@@ -1,0 +1,93 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+vrrp_script chk_haproxy {
+  script "/usr/bin/killall -0 haproxy"  # check the haproxy process
+  interval 2                            # every 2 seconds
+  weight 2                              # add 2 points if OK
+}
+
+{% for host in groups['load_balancers'] %}{% if inventory_hostname == hostvars[host].inventory_hostname %}
+{% if  clusters.definition[cluster_name].load_balancers.vrrp.internal          is defined
+   and clusters.definition[cluster_name].load_balancers.vrrp.internal.iface    is defined
+   and clusters.definition[cluster_name].load_balancers.vrrp.internal.route_id is defined
+   and clusters.definition[cluster_name].load_balancers.vrrp.internal.vip      is defined
+%}
+vrrp_instance LB_internal {
+  interface 		{{ clusters.definition[cluster_name].load_balancers.vrrp.internal.iface }} 
+  state 		{% if loop.index == 1 %}MASTER{% else %}BACKUP{% endif %}
+
+  virtual_router_id 	{{ clusters.definition[cluster_name].load_balancers.vrrp.internal.route_id }}
+  priority 		{% if loop.index == 1 %}{{ loop.index + 200 }}{% else %}{{ loop.index + 100 }}{% endif %}
+
+  nopreempt
+
+{% if clusters.definition[cluster_name].load_balancers.vrrp.internal.password is defined %}
+  authentication {
+      auth_type         PASS
+      auth_pass         {{ clusters.definition[cluster_name].load_balancers.vrrp.internal.password }}
+  }
+
+{% endif %}
+  unicast_src_ip        {{ hostvars[host].ansible_default_ipv4.address  }}
+
+  unicast_peer {
+{% for other in groups['load_balancers'] %}{% if inventory_hostname != hostvars[other].inventory_hostname %}
+      {{ hostvars[other].ansible_default_ipv4.address  }}
+{% endif %}{% endfor %}
+  }
+
+  virtual_ipaddress {
+    {{ clusters.definition[cluster_name].load_balancers.vrrp.internal.vip }}
+  }
+
+  track_script {
+    chk_haproxy
+  }
+} 
+{% endif %}
+
+{% if  clusters.definition[cluster_name].load_balancers.vrrp.external          is defined
+   and clusters.definition[cluster_name].load_balancers.vrrp.external.iface    is defined
+   and clusters.definition[cluster_name].load_balancers.vrrp.external.route_id is defined
+   and clusters.definition[cluster_name].load_balancers.vrrp.external.vip      is defined
+%}
+vrrp_instance LB_external {
+  interface 		{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }} 
+  state 		{% if loop.index == 1 %}MASTER{% else %}BACKUP{% endif %}
+
+  virtual_router_id 	{{ clusters.definition[cluster_name].load_balancers.vrrp.external.route_id }}
+  priority 		{% if loop.index == 1 %}{{ loop.index + 200 }}{% else %}{{ loop.index + 100 }}{% endif %}
+
+  nopreempt
+
+{% if clusters.definition[cluster_name].load_balancers.vrrp.external.password is defined %}
+  authentication {
+      auth_type         PASS
+      auth_pass         {{ clusters.definition[cluster_name].load_balancers.vrrp.external.password }}
+  }
+
+{% endif %}
+  unicast_src_ip        {{ hostvars[host].ansible_default_ipv4.address  }}
+
+  unicast_peer {
+{% for other in groups['load_balancers'] %}{% if inventory_hostname != hostvars[other].inventory_hostname %}
+      {{ hostvars[other].ansible_default_ipv4.address  }}
+{% endif %}{% endfor %}
+  }
+
+  virtual_ipaddress {
+    {{ clusters.definition[cluster_name].load_balancers.vrrp.external.vip }}
+  }
+
+  track_script {
+    chk_haproxy
+  }
+} 
+{% endif %}
+{% endif %}{% endfor %}

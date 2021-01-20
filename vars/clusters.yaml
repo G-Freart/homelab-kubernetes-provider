@@ -30,10 +30,25 @@ definition:
       disk:             60
 
     load_balancers:
-      vms:              1
+      vms:              2
       vcpu:             2
       mem:              4
       disk:             30
+
+      vrrp:
+
+        internal:
+          iface:        ens3
+          route_id:     1
+          vip:          192.168.1.2/24
+          password:     Th3P@ssw0rd
+
+        external:
+          iface:        ens4
+          route_id:     2
+          vip:          192.168.0.103/24
+          password:     Th3P@ssw0rd
+          bridge:       host-bridge
 
     network:
       iface:            ens3

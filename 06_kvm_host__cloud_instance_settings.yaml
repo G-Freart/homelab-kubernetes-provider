@@ -14,40 +14,105 @@
     
   tasks:
 
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c8s, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
     - name: "Cloud instance setting -- Computing instance directory"
       set_fact:
         instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
         
-    - name: "Cloud instance setting -- Creating ssh key directory"
-      file:
-        path:            "{{ instance_dir }}/{{ cluster_name }}/sshkey/"
-        state:           directory
+    - name: "Cloud instance setting -- Check if instance directory already exists"
+      stat:
+        path:            "{{ instance_dir }}/{{ cluster_name }}/"
+      register:          tgt_dir
 
     - name: "Cloud instance setting -- Creating inventory directory"
       file:
         path:            "{{ instance_dir }}/{{ cluster_name }}/inventory/"
         state:           directory
+      when:              tgt_dir.stat.exists == False
 
     - name: "Cloud instance setting -- Creating kubelet directory"
       file:
         path:            "{{ instance_dir }}/{{ cluster_name }}/kubelet/"
         state:           directory
+      when:              tgt_dir.stat.exists == False
 
     - name: "Cloud instance setting -- Creating terraform directory"
       file:
-        path:            "{{ item }}"
+        path:            "{{ instance_dir }}/{{ cluster_name }}/terraform/{{ item }}"
         state:           directory
       loop:
-        - "{{ instance_dir }}/{{ cluster_name }}/terraform/control_plane"
-        - "{{ instance_dir }}/{{ cluster_name }}/terraform/worker"
-        - "{{ instance_dir }}/{{ cluster_name }}/terraform/load_balancer"
+        - "control_plane"
+        - "worker"
+        - "load_balancer"
 
-    - name: "Cloud instance setting -- Copying terraform templates"
-      copy:
-        src:             "templates/terraform/"
-        dest:            "{{ item }}"
-        remote_src:      true
-      loop:
-        - "{{ instance_dir }}/{{ cluster_name }}/terraform/control_plane"
-        - "{{ instance_dir }}/{{ cluster_name }}/terraform/worker"
-        - "{{ instance_dir }}/{{ cluster_name }}/terraform/load_balancer"
+    - name: "Cloud instance setting -- Preparing terraform templates"
+      block:
+        - name: "Cloud instance setting -- Preparing terraform templates - copying all files"
+          copy:
+            src:             "templates/terraform/"
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/terraform/{{ item }}"
+            remote_src:      true
+          loop:
+            - "control_plane"
+            - "worker"
+            - "load_balancer"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - removing kvm_guest.tf.j2 file"
+          file:
+            path:            "{{ instance_dir }}/{{ cluster_name }}/terraform/{{ item }}/kvm_guest.tf.j2"
+            state:           "absent"
+          loop:
+            - "control_plane"
+            - "worker"
+            - "load_balancer"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact about secondary network bridge"
+          set_fact:
+            secondary_network: "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.bridge }}"
+          when: 
+            - clusters.definition[cluster_name].load_balancers.vrrp                 is defined
+            - clusters.definition[cluster_name].load_balancers.vrrp.external        is defined
+            - clusters.definition[cluster_name].load_balancers.vrrp.external.bridge is defined
+
+        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact about VMs type allowed for secondary network"
+          set_fact:
+            secondary_item_type: "load_balancer"
+          when: 
+            - clusters.definition[cluster_name].load_balancers.vrrp                 is defined
+            - clusters.definition[cluster_name].load_balancers.vrrp.external        is defined
+            - clusters.definition[cluster_name].load_balancers.vrrp.external.bridge is defined
+
+        - name: "Cloud instance setting -- Preparing terraform templates - templating kvm_guest.tf file"
+          template:
+            src:             "templates/terraform/kvm_guest.tf.j2"
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/terraform/{{ item }}/kvm_guest.tf"
+          loop:
+            - "control_plane"
+            - "worker"
+            - "load_balancer"
+
+      when:              tgt_dir.stat.exists == False

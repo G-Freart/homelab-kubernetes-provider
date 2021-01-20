@@ -20,26 +20,10 @@
           include_vars:
             file:        vars/testlab_samples/centos-7.yaml
             name:        c7x
-        - name: Loading CentOS 8.1 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.1.yaml
-            name:        c81
-        - name: Loading CentOS 8.2 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.2.yaml
-            name:        c82
-        - name: Loading CentOS 8.3 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/centos-8.3.yaml
-            name:        c83
         - name: Loading CentOS 8 Stream cluster samples
           include_vars:
             file:        vars/testlab_samples/centos-8-stream.yaml
             name:        c8s
-        - name: Loading Ubuntu 18.04 cluster samples
-          include_vars:
-            file:        vars/testlab_samples/ubuntu-18.04.yaml
-            name:        u1804
         - name: Loading Ubuntu 20.04 cluster samples
           include_vars:
             file:        vars/testlab_samples/ubuntu-20.04.yaml
@@ -54,7 +38,7 @@
             name:        custo
         - name: Merging all cluster definitions
           set_fact:
-            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c81, recursive=True) | combine(c82, recursive=True) | combine(c83, recursive=True) | combine(c8s, recursive=True) | combine(u1804, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c8s, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
 
     - name: Libvirt get iso -- Check if the used libvirt storage path already exist
       stat:

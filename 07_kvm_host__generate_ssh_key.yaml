@@ -18,13 +18,24 @@
       set_fact:
         instance_dir: "instances/{{ lookup('file', '/var/lib/dbus/machine-id') }}"
         
-    - name: Generate SSH Key -- Check if keypair has already been generated
+    - name: Generate SSH Key -- Check if we have ~/.ssh
       stat:
-        path:      "{{ instance_dir }}/{{ cluster_name }}/sshkey/id_rsa"
-      register:    keypair_result
+        path:      "~/.ssh/"
+      register:    ssh_home
 
-    - name: Generate SSH Key -- Create ssh keypair
+    - name: Generate SSH Key -- Create ~/.ssh
+      file:
+        path:      "~/.ssh"
+        state:     directory
+        mode:      "0700"
+      when:        ssh_home.stat.exists == False
+
+    - name: Generate SSH Key -- Check if we have ~/.ssh/id_rsa key file
+      stat:
+        path:      "~/.ssh/id_rsa"
+      register:    ssh_key
+
+    - name: Generate SSH Key -- Create ssh ~/.ssh/id_rsa key file
       openssh_keypair:
-        path:      "{{ instance_dir }}/{{ cluster_name }}/sshkey/id_rsa"
-      when:        keypair_result.stat.exists == False
-
+        path:      "~/.ssh/id_rsa"
+      when:        ssh_key.stat.exists == False
