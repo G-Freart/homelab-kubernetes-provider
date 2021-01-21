@@ -43,7 +43,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -89,7 +89,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -134,7 +134,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -179,7 +179,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -224,7 +224,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -269,7 +269,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -314,7 +314,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -359,7 +359,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -404,7 +404,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -449,7 +449,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -494,7 +494,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
@@ -539,7 +539,7 @@ definition:
         external:
           iface:        eth1
           route_id:     2
-          vip:          192.168.0.104/24
+          vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
