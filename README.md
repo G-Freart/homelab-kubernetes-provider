@@ -1,15 +1,30 @@
 # homelab-kubernetes-provider
 
 This ansible repo allow the provisioning of a kubernetes cluster running inside a set of KVM VMs.
-It allow the settings configuration using files from the folder /vars.
+Settings configuration are done using files from the folder /vars.
 
-Thanks @ [kubealex](https://github.com/kubealex/libvirt-k8s-provisioner) whose repo inspired me with the basics of my Provider.
+As i'm in the mindset to automate the creation of my k8s cluster and apps installation, it does not
+allow to modify the kubernetes topology (number of node) whenever the cluster has been configured.
 
-I'm aware that ansible files could be improved to avoid some cut/paste using legacy task from external file, etc.
-This repo is intended for my homestudy and was not crated with a production mode mindset.
+Thanks @ [kubealex](https://github.com/kubealex/libvirt-k8s-provisioner) whose repo inspired me with 
+the basics of my Provider.
+
+This repo is intended for my home study and was not created with a production mode mindset. Ansible 
+files could be improved to avoid some cut/paste using legacy task from external file, etc.
+
+ETCD are installed using the default a K8S stacked mode.
+
+Used part are :
+* ansible 
+* terraform
+* keepalived (multiple VIP using vrrp)
+* haproxy
+* kubernetes
+* CRI : docker / crio / containerd
+* CNI : flannel / calico
+* INGRESS : haproxy / nginx
 
 The vars/default-settings.yaml allow to define the cluster name to create, the VM base settings as timezone, local, technical user, ...
-Moreover, if your wanna use another libvirt folder location, you could customize target directory using this settings files.
 
 The vars/clusters.yaml file is the one to use in order to define wished clusters :
 
@@ -78,7 +93,7 @@ definition:
 
 In this file, andromeda is the name of the cluster.
 
-Guest OS which are defined inside the files /groups_vars_kvm_guest/cloud_images.yaml, could have one of the following value :
+Guest OS could have one of the following value :
 * Ubuntu 20.04
 * Ubuntu 20.10
 * CentOS 7
@@ -97,13 +112,17 @@ Ingress could have one of the following value :
 * haproxy
 * nginx
 
-In order to create load balancer VMs, you should create more than one control plane. 
+In order to create load balancer VMs, you must create more than one control plane VMs. 
 
 For each VMs, settings are :
 * vms : the count of VMs to provision
 * vcpu : the count of virtual cpu to associate to the related VM
 * mem: the RAM (in gigabyte) to associate to the related VM
 * disk : the disk size (in gigabyte) to associate to the related VM
+
+When more than one load balancer is defined, one VIP will be configured between each load balancer node. This VIP is configured
+using settings put under 'internal' tag. More over, an 'external' could be also configured which allow you to access your cluster
+from outside of it, using the setted KVM  'bridge'
 
 The network part of the file allow you to customize either the KVM network or the K8S network :
 * 'iface' must contains the name of the interface created during the terraform process of the VM provisionning :
@@ -114,5 +133,6 @@ The network part of the file allow you to customize either the KVM network or th
 * 'pod_cidr' and 'service_cidr' are the parameter given as argument when using the kubeadm command to create the k8s cluster.
 
 You will able to find a set of test cluster definition inside the folder /vars/testlab_samples
+
 
 Have fun with this repo!
