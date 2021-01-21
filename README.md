@@ -12,13 +12,14 @@ the basics of my Provider.
 This repo is intended for my home study and was not created with a production mode mindset. Ansible 
 files could be improved to avoid some cut/paste using legacy task from external file, etc.
 
-ETCD are installed using the default a K8S stacked mode.
+ETCD are installed using the K8S default (stacked mode).
 
 Used part are :
 * ansible 
 * terraform
 * keepalived (multiple VIP using vrrp)
 * haproxy
+* kubeadm
 * kubernetes
 * CRI : docker / crio / containerd
 * CNI : flannel / calico
