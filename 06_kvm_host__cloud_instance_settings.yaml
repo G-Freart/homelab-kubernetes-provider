@@ -122,14 +122,34 @@
             - "worker"
             - "load_balancer"
 
-        - name: "Cloud instance setting -- Preparing terraform templates - Generating guest password"
+        - name: "Cloud instance setting -- Generating VM password of {{ username }}"
           set_fact:
             password:        "{{ lookup('password', '/dev/null chars=ascii_letters,digits,punctuation length=16') }}"
           when:              password is not defined
 
-        - name: Kube setup first control plane -- Retreiving the k8s token within the cluster instance info
+        - name: "Cloud instance setting -- Storing VM password of {{ username }}"
           copy:
             dest:            "{{ instance_dir }}/{{ cluster_name }}/secret/password.txt"
             content:         "{{ password }}"
+
+        - name: Cloud instance setting -- Generating VRRP internal password
+          set_fact:
+            vrrp_internal_password:        "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=8') }}"
+          when:              vrrp_internal_password is not defined
+
+        - name: Cloud instance setting -- Storing VRRP internal password
+          copy:
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/secret/vrrp_internal_password.txt"
+            content:         "{{ vrrp_internal_password }}"
+
+        - name: Cloud instance setting -- Generating VRRP external password
+          set_fact:
+            vrrp_external_password:        "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=8') }}"
+          when:              vrrp_external_password is not defined
+
+        - name: Cloud instance setting -- Storing VRRP external password
+          copy:
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/secret/vrrp_external_password.txt"
+            content:         "{{ vrrp_external_password }}"
 
       when:              tgt_dir.stat.exists == False

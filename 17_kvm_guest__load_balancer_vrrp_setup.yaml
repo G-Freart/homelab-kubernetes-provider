@@ -100,6 +100,11 @@
             - extnet.stat.exists == False
           become:       true
           
+        - name: Control Plane provisionning -- Retreiving vrrp passwords
+          set_fact:
+            vrrp_internal_password: "{{ lookup ('file', instance_dir + '/' + cluster_name + '/secret/vrrp_internal_password.txt') }}"
+            vrrp_external_password: "{{ lookup ('file', instance_dir + '/' + cluster_name + '/secret/vrrp_external_password.txt') }}"
+
         - name: Load balancer VRRP setup -- Ensuring keepalived configuration
           block:
             - name: Load balancer VRRP setup -- Creating keepalived configuration

@@ -27,10 +27,10 @@ vrrp_instance LB_internal {
 
   nopreempt
 
-{% if clusters.definition[cluster_name].load_balancers.vrrp.internal.password is defined %}
+{% if vrrp_internal_password is defined %}
   authentication {
       auth_type         PASS
-      auth_pass         {{ clusters.definition[cluster_name].load_balancers.vrrp.internal.password }}
+      auth_pass         {{ vrrp_internal_password }}
   }
 
 {% endif %}
@@ -66,10 +66,10 @@ vrrp_instance LB_external {
 
   nopreempt
 
-{% if clusters.definition[cluster_name].load_balancers.vrrp.external.password is defined %}
+{% if vrrp_external_password is defined %}
   authentication {
       auth_type         PASS
-      auth_pass         {{ clusters.definition[cluster_name].load_balancers.vrrp.external.password }}
+      auth_pass         {{ vrrp_external_password }}
   }
 
 {% endif %}
