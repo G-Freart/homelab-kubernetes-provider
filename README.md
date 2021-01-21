@@ -63,7 +63,7 @@ definition:
       disk:             60
 
     load_balancers:
-      vms:              1
+      vms:              2
       vcpu:             2
       mem:              4
       disk:             30
