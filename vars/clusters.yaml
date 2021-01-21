@@ -39,12 +39,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.1.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     103
           vip:          192.168.0.103/24
           bridge:       host-bridge
 
