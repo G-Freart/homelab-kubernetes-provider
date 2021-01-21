@@ -14,9 +14,10 @@ files could be improved to avoid some cut/paste using legacy task from external 
 
 ETCD are installed using the K8S default (stacked mode).
 
-Used part are :
-* ansible 
+Techno used are :
+* ansible with jinja2
 * terraform
+* shell script
 * keepalived (multiple VIP using vrrp)
 * haproxy
 * kubeadm
