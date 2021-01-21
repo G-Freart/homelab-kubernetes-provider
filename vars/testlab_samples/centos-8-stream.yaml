@@ -39,13 +39,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -87,13 +85,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -134,13 +130,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -181,13 +175,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -228,13 +220,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -275,13 +265,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -322,13 +310,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -369,13 +355,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -416,13 +400,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -463,13 +445,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -510,13 +490,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -557,13 +535,11 @@ definition:
           iface:        eth0
           route_id:     1
           vip:          192.168.150.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        eth1
           route_id:     2
           vip:          192.168.0.104/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:

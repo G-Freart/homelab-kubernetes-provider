@@ -74,13 +74,11 @@ definition:
           iface:        ens3
           route_id:     1
           vip:          192.168.1.2/24
-          password:     Th3P@ssw0rd
 
         external:
           iface:        ens4
           route_id:     2
           vip:          192.168.0.103/24
-          password:     Th3P@ssw0rd
           bridge:       host-bridge
 
     network:
@@ -131,10 +129,10 @@ The network part of the file allow you to customize either the KVM network or th
   * eth0 whenever the guest operating system is a red hat based
   * ens3 whenever the guest operating system is a ubuntu based
 * 'network_cidr' must contains the wished cidr of the KVM network which will be created using the given 'bridge' name.
-* 'domain' contains the network domain towhich all VMs will belong
-* 'pod_cidr' and 'service_cidr' are the parameter given as argument when using the kubeadm command to create the k8s cluster.
+* 'domain' contains the network domain towhich all VMs belong
+* 'pod_cidr' and 'service_cidr' are arguments used when the kubernetes cluster is initialized using kubeadm init command.
 
-You will able to find a set of test cluster definition inside the folder /vars/testlab_samples
+A set of test cluster definition could be found inside the folder /vars/testlab_samples
 
 
 Have fun with this repo!
