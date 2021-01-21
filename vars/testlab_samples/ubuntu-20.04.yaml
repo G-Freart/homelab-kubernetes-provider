@@ -37,12 +37,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -83,12 +83,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -128,12 +128,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -173,12 +173,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -218,12 +218,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -263,12 +263,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -308,12 +308,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -353,12 +353,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -398,12 +398,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -443,12 +443,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -488,12 +488,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
@@ -533,12 +533,12 @@ definition:
 
         internal:
           iface:        ens3
-          route_id:     1
+          route_id:     2
           vip:          192.168.150.2/24
 
         external:
           iface:        ens4
-          route_id:     2
+          route_id:     23
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
