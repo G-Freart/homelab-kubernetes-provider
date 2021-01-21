@@ -8,22 +8,18 @@
 
 vrrp_packages:
   "Ubuntu 20.04":
-    supported:                  True
     apt_list:
       - { state: "present", name: "keepalived"              }  
 
   "Ubuntu 20.10":
-    supported:                  True
     apt_list:
       - { state: "present", name: "keepalived"              }  
 
   "CentOS 7":
-    supported:                  True
     yum_list:
       - { state: "present", name: "keepalived"              }  
 
   "CentOS 8 Stream":
-    supported:                  True
     yum_list:
       - { state: "present", name: "keepalived"              }  
 
