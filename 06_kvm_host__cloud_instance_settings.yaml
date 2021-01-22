@@ -124,7 +124,7 @@
 
         - name: "Cloud instance setting -- Generating VM password of {{ username }}"
           set_fact:
-            password:        "{{ lookup('password', '/dev/null chars=ascii_letters,digits,punctuation length=16') }}"
+            password:        "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
           when:              password is not defined
 
         - name: "Cloud instance setting -- Storing VM password of {{ username }}"
