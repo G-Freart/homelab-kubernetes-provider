@@ -27,7 +27,7 @@ definition:
       vms:              5
       vcpu:             3
       mem:              12
-      disk:             60
+      disk:             120
 
     load_balancers:
       vms:              2

@@ -14,7 +14,7 @@
 crio_packages:
   "Ubuntu 20.04":
     os:                         "xUbuntu_20.04"
-    version:                    "1.20"
+    version:                    "1.21"
     repo_lib_container_url:     "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/"
     repo_lib_container_key_cmd: "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/$OS/Release.key | apt-key add -"
     repo_crio_url:              "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/"
@@ -22,7 +22,7 @@ crio_packages:
 
   "Ubuntu 20.10":
     os:                         "xUbuntu_20.10"
-    version:                    "1.18"
+    version:                    "1.21"
     repo_lib_container_url:     "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/"
     repo_lib_container_key_cmd: "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/$OS/Release.key | apt-key add -"
     repo_crio_url:              "http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/"
@@ -30,13 +30,13 @@ crio_packages:
 
   "CentOS 7":
     os:                         "CentOS_7"
-    version:                    "1.20"
+    version:                    "1.21"
     may_detach_mounts:          True
     repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"
     repo_cri_versioned_url:     "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo"
 
   "CentOS 8 Stream":
     os:                         "CentOS_8_Stream"
-    version:                    "1.19"
+    version:                    "1.21"
     repo_lib_container_url:     "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:kubic:libcontainers:stable.repo"
     repo_cri_versioned_url:     "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo"

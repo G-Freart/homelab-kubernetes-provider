@@ -6,11 +6,6 @@
 #                                                                                            #
 # ------------------------------------------------------------------------------------------ #
 
-#
-# We are using the last available cri-o version as defined at the official github project
-#
-#   https://github.com/cri-o/cri-o/blob/master/install.md#install-packaged-versions-of-cri-o
-#
 docker_packages:
   "Ubuntu 20.04":
     docker_key_cmd:             "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key --keyring /etc/apt/trusted.gpg.d/docker.gpg add -"
