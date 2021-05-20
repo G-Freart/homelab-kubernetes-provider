@@ -32,3 +32,4 @@
 - import_playbook: 24_kvm_guest__kube_control_plane_ingress_nginx_setup.yaml
 - import_playbook: 25_kvm_guest__kube_control_plane_ingress_haproxy_setup.yaml
 - import_playbook: 26_kvm_guest__load_balancer_ingress_setup.yaml
+- import_playbook: 27_kvm_guest__kube_control_plane_helm_v3_setup.yaml

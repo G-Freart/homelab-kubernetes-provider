@@ -1,0 +1,75 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook will configure helm v3 on every control planes
+  hosts: control_planes
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/helm.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+    
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c8s, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name:  Kube setup helm on control plane -- Current provisioning facts of the VMs 
+      debug:
+        var: ansible_local['homelab-kubernetes-provider']
+
+    - name:  Kube setup helm on control plane -- Configure other nodes
+      block:
+
+        - name:     Kube setup helm on control plane -- Downloading helm setup file
+          get_url:
+            url:    "{{ helm.get_helm_url }}"
+            dest:   /tmp/get_helm.sh
+            mode:   0700
+          become:   true
+
+        - name:     Kube setup helm on control plane -- Executing the helm binary installation
+          command:  /tmp/get_helm.sh
+          become:   true
+
+              
+        - name: Kube setup helm on control plane  -- Storing new state inside the homelab-kubernetes-provider custom fact
+          lineinfile:
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
+            line:   "helm_package=true"
+          become:   true
+  
+        - name: Kube setup helm on control plane -- Reload the homelab-kubernetes-provider custom fact
+          setup:
+            filter: ansible_local          
+
+      when: 
+        - clusters.definition[cluster_name].control_planes.vms > 0
+        - ansible_local['homelab-kubernetes-provider']['setup']['helm_package'] is not defined

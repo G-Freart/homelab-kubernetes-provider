@@ -178,11 +178,13 @@
           file:
             path:  /home/{{ username }}/.kube
             state: directory
+            mode:  0700
 
         - name: Kube setup first control plane -- Filling user kube directory
           copy:
             src:        /etc/kubernetes/admin.conf
             dest:       /home/{{ username }}/.kube/config
+            mode:       0600
             remote_src: true
             owner:      "{{ username }}"
             group:      "{{ username }}"
@@ -192,12 +194,14 @@
           file:
             path:  /root/.kube
             state: directory
+            mode:  0700
           become: true
 
         - name: Kube setup first control plane -- Filling root kube directory
           copy:
             src:        /etc/kubernetes/admin.conf
             dest:       /root/.kube/config
+            mode:       0600
             remote_src: true
             owner:      root
             group:      root
