@@ -69,7 +69,7 @@ definition:
       vcpu:             2
       mem:              4
       disk:             30
-      external_iface:   false
+      external_iface:   true
 
       vrrp:
 
