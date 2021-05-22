@@ -48,41 +48,43 @@ definition:
     guest_os:           'Ubuntu 20.04'
     container_runtime:  crio
     cni_plugin:         flannel
-    ingress:            haproxy
+    ingress:            nginx
 
     control_planes:
       vms:              3
       vcpu:             2
       mem:              6
       disk:             30
+      external_iface:   false
 
     worker_nodes:
       vms:              3
       vcpu:             3
       mem:              12
       disk:             60
+      external_iface:   false
 
     load_balancers:
       vms:              2
       vcpu:             2
       mem:              4
       disk:             30
+      external_iface:   false
 
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     1
           vip:          192.168.1.2/24
 
         external:
-          iface:        ens4
           route_id:     2
           vip:          192.168.0.103/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.1.0/24
       domain:           homelab
       bridge:           homelab
@@ -94,10 +96,10 @@ definition:
 In this file, andromeda is the name of the cluster.
 
 Guest OS could have one of the following value :
-* Ubuntu 20.04
-* Ubuntu 20.10
-* CentOS 7
-* CentOS 8 Stream
+* Ubuntu 20.04 (Tested)
+* Ubuntu 20.10 (To be tested)
+* CentOS 7 (To be tested)
+* CentOS 8 Stream (To be tested)
 
 Container Runtime could have one of the following value :
 * crio
@@ -125,9 +127,12 @@ using settings put under 'internal' tag. More over, an 'external' could be also 
 from outside of it, using the setted KVM  'bridge'
 
 The network part of the file allow you to customize either the KVM network or the K8S network :
-* 'iface' must contains the name of the interface created during the terraform process of the VM provisionning :
+* 'iface_internal' must contains the name of the internal interface created during the terraform process of the VM provisionning :
   * eth0 whenever the guest operating system is a red hat based
   * ens3 whenever the guest operating system is a ubuntu based
+* 'iface_external' could contains the name of the extenal interface created after the VM provisionning :
+  * eth1 whenever the guest operating system is a red hat based
+  * ens4 whenever the guest operating system is a ubuntu based
 * 'network_cidr' must contains the wished cidr of the KVM network which will be created using the given 'bridge' name.
 * 'domain' contains the network domain towhich all VMs belong
 * 'pod_cidr' and 'service_cidr' are arguments used when the kubernetes cluster is initialized using kubeadm init command.
