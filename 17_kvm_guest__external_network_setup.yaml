@@ -69,8 +69,8 @@
             - ansible_distribution == 'Ubuntu'
             - extnet.stat.exists == False
             - '"control_planes" in hostvars[inventory_hostname].group_names'
-            - clusters.definition[cluster_name].control_planes.external_iface is defined
-            - clusters.definition[cluster_name].control_planes.external_iface == True
+            - clusters.definition[cluster_name].control_planes.has_external_network is defined
+            - clusters.definition[cluster_name].control_planes.has_external_network == True
           become:       true
 
         - name: External Network setup -- Ensuring external network configuration on worker nodes
@@ -89,8 +89,8 @@
             - ansible_distribution == 'Ubuntu'
             - extnet.stat.exists == False
             - '"workers" in hostvars[inventory_hostname].group_names'
-            - clusters.definition[cluster_name].worker_nodes.external_iface is defined
-            - clusters.definition[cluster_name].worker_nodes.external_iface == True
+            - clusters.definition[cluster_name].worker_nodes.has_external_network is defined
+            - clusters.definition[cluster_name].worker_nodes.has_external_network == True
           become:       true
 
         - name: External Network setup -- Ensuring external network configuration on load balancers nodes
@@ -109,8 +109,8 @@
             - ansible_distribution == 'Ubuntu'
             - extnet.stat.exists == False
             - '"load_balancers" in hostvars[inventory_hostname].group_names'
-            - clusters.definition[cluster_name].load_balancers.external_iface is defined
-            - clusters.definition[cluster_name].load_balancers.external_iface == True
+            - clusters.definition[cluster_name].load_balancers.has_external_network is defined
+            - clusters.definition[cluster_name].load_balancers.has_external_network == True
           become:       true
 
         - name: External Network setup -- Storing new state inside the homelab-kubernetes-provider custom fact

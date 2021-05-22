@@ -11,576 +11,600 @@
 definition:
   "u2010-cont-fl-ha":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  containerd
-    cni_plugin:         flannel
-    ingress:            haproxy
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            containerd
+    cni_plugin:                   flannel
+    ingress:                      haproxy
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-cont-fl-ng":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  containerd
-    cni_plugin:         flannel
-    ingress:            nginx
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            containerd
+    cni_plugin:                   flannel
+    ingress:                      nginx
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-cont-ca-ha":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  containerd
-    cni_plugin:         calico
-    ingress:            haproxy
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            containerd
+    cni_plugin:                   calico
+    ingress:                      haproxy
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-cont-ca-ng":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  containerd
-    cni_plugin:         calico
-    ingress:            nginx
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            containerd
+    cni_plugin:                   calico
+    ingress:                      nginx
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-crio-fl-ha":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  crio
-    cni_plugin:         flannel
-    ingress:            haproxy
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            crio
+    cni_plugin:                   flannel
+    ingress:                      haproxy
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-crio-fl-ng":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  crio
-    cni_plugin:         flannel
-    ingress:            nginx
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            crio
+    cni_plugin:                   flannel
+    ingress:                      nginx
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-crio-ca-ha":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  crio
-    cni_plugin:         calico
-    ingress:            haproxy
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            crio
+    cni_plugin:                   calico
+    ingress:                      haproxy
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-crio-ca-ng":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  crio
-    cni_plugin:         calico
-    ingress:            nginx
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            crio
+    cni_plugin:                   calico
+    ingress:                      nginx
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-dock-fl-ha":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  docker
-    cni_plugin:         flannel
-    ingress:            haproxy
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            docker
+    cni_plugin:                   flannel
+    ingress:                      haproxy
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-dock-fl-ng":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  docker
-    cni_plugin:         flannel
-    ingress:            nginx
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            docker
+    cni_plugin:                   flannel
+    ingress:                      nginx
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-dock-ca-ha":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  docker
-    cni_plugin:         calico
-    ingress:            haproxy
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            docker
+    cni_plugin:                   calico
+    ingress:                      haproxy
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16
 
   "u2010-dock-ca-ng":
 
-    guest_os:           'Ubuntu 20.10'
-    container_runtime:  docker
-    cni_plugin:         calico
-    ingress:            nginx
+    guest_os:                     'Ubuntu 20.10'
+    container_runtime:            docker
+    cni_plugin:                   calico
+    ingress:                      nginx
 
     control_planes:
-      vms:              2
-      vcpu:             2
-      mem:              2
-      disk:             20
-      external_iface:   false
+      vms:                        2
+      vcpu:                       2
+      mem:                        2
+      disk:                       20
+      has_external_network:       false
 
     worker_nodes:
-      vms:              1
-      vcpu:             2
-      mem:              2
-      disk:             30
-      external_iface:   false
+      vms:                        1
+      vcpu:                       2
+      mem:                        2
+      disk:                       30
+      has_external_network:       false
 
     load_balancers:
-      vms:              1
-      vcpu:             1
-      mem:              2
-      disk:             20
-      external_iface:   true
+      vms:                        1
+      vcpu:                       1
+      mem:                        2
+      disk:                       20
+      has_external_network:       true
 
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.150.2/24
+          route_id:               2
+          vip:                    192.168.150.2/24
 
         external:
-          route_id:     113
-          vip:          192.168.0.113/24
-          bridge:       host-bridge
+          route_id:               113
+          vip:                    192.168.0.113/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.150.0/24
-      domain:           k8s.testlab
-      bridge:           k8s-testlab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:             ens3
+      bridge_internal:            k8s-testlab
+
+      iface_external:             ens4
+      bridge_external:            host-bridge
+
+      network_cidr:               192.168.150.0/24
+      domain:                     k8s.testlab
+      pod_cidr:                   10.20.0.0/16
+      service_cidr:               10.110.0.0/16

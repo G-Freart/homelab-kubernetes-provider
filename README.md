@@ -45,51 +45,53 @@ definition:
 
   "andromeda":
 
-    guest_os:           'Ubuntu 20.04'
-    container_runtime:  crio
-    cni_plugin:         flannel
-    ingress:            nginx
+    guest_os:                 'Ubuntu 20.04'
+    container_runtime:        crio
+    cni_plugin:               flannel
+    ingress:                  nginx
 
     control_planes:
-      vms:              3
-      vcpu:             2
-      mem:              6
-      disk:             30
-      external_iface:   false
+      vms:                    3
+      vcpu:                   2
+      mem:                    6
+      disk:                   30
+      has_external_network:   false
 
     worker_nodes:
-      vms:              3
-      vcpu:             3
-      mem:              12
-      disk:             60
-      external_iface:   false
+      vms:                    3
+      vcpu:                   3
+      mem:                    12
+      disk:                   60
+      has_external_network:   false
 
     load_balancers:
-      vms:              2
-      vcpu:             2
-      mem:              4
-      disk:             30
-      external_iface:   true
+      vms:                    2
+      vcpu:                   2
+      mem:                    4
+      disk:                   30
+      has_external_network:   true
 
       vrrp:
 
         internal:
-          route_id:     1
-          vip:          192.168.1.2/24
+          route_id:           1
+          vip:                192.168.1.2/24
 
         external:
-          route_id:     2
-          vip:          192.168.0.103/24
-          bridge:       host-bridge
+          route_id:           2
+          vip:                192.168.0.103/24
 
     network:
-      iface_internal:   ens3
-      iface_external:   ens4
-      network_cidr:     192.168.1.0/24
-      domain:           homelab
-      bridge:           homelab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      iface_internal:         ens3
+      bridge_internal:        homelab
+
+      iface_external:         ens4
+      bridge_external:        host-bridge
+
+      network_cidr:           192.168.1.0/24
+      domain:                 homelab
+      pod_cidr:               10.20.0.0/16
+      service_cidr:           10.110.0.0/16
 
 ```
 
@@ -124,7 +126,7 @@ For each VMs, settings are :
 
 When more than one load balancer is defined, one VIP will be configured between each load balancer node. This VIP is configured
 using settings put under 'internal' tag. More over, an 'external' could be also configured which allow you to access your cluster
-from outside of it, using the setted KVM  'bridge'
+from outside of it, using an existing KVM  bridge.
 
 The network part of the file allow you to customize either the KVM network or the K8S network :
 * 'iface_internal' must contains the name of the internal interface created during the terraform process of the VM provisionning :
@@ -133,7 +135,7 @@ The network part of the file allow you to customize either the KVM network or th
 * 'iface_external' could contains the name of the extenal interface created after the VM provisionning :
   * eth1 whenever the guest operating system is a red hat based
   * ens4 whenever the guest operating system is a ubuntu based
-* 'network_cidr' must contains the wished cidr of the KVM network which will be created using the given 'bridge' name.
+* 'network_cidr' must contains the wished cidr of the KVM network which will be created using the given 'bridge_internal' name.
 * 'domain' contains the network domain towhich all VMs belong
 * 'pod_cidr' and 'service_cidr' are arguments used when the kubernetes cluster is initialized using kubeadm init command.
 

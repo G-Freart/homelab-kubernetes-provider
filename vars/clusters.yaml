@@ -18,25 +18,25 @@ definition:
     ingress:            nginx
 
     control_planes:
-      vms:              3
-      vcpu:             2
-      mem:              6
-      disk:             30
-      external_iface:   false
+      vms:                      3
+      vcpu:                     2
+      mem:                      6
+      disk:                     30
+      has_external_network:     false
 
     worker_nodes:
-      vms:              5
-      vcpu:             3
-      mem:              12
-      disk:             120
-      external_iface:   false
+      vms:                      5
+      vcpu:                     3
+      mem:                      12
+      disk:                     120
+      has_external_network:     false
 
     load_balancers:
-      vms:              2
-      vcpu:             2
-      mem:              4
-      disk:             30
-      external_iface:   true
+      vms:                      2
+      vcpu:                     2
+      mem:                      4
+      disk:                     30
+      has_external_network:     true
 
       vrrp:
 
@@ -47,14 +47,16 @@ definition:
         external:
           route_id:     103
           vip:          192.168.0.103/24
-          bridge:       host-bridge
 
     network:
       iface_internal:   ens3
+      bridge_internal:  homelab
+
       iface_external:   ens4
+      bridge_external:  host-bridge
+
       network_cidr:     192.168.1.0/24
       domain:           homelab
-      bridge:           homelab
       pod_cidr:         10.20.0.0/16
       service_cidr:     10.110.0.0/16
 

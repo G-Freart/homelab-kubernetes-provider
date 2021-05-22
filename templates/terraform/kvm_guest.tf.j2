@@ -6,22 +6,24 @@
 #                                                                                            #
 # ------------------------------------------------------------------------------------------ #
 
-variable "hostname"        { default = ""     }
-variable "domain"          { default = ""     }
-variable "iface"           { default = ""     }
-variable "keymap"          { default = ""     }
-variable "timezone"        { default = ""     }
-variable "memory"          { default = 2      }
-variable "cpu"             { default = 2      }
-variable "vm_count"        { default = 1      }
-variable "vm_volume_size"  { default = 20     }
-variable "libvirt_network" { default = ""     }
-variable "libvirt_pool"    { default = ""     }
-variable "os_image_path"   { default = ""     }
-variable "id_rsa_pub_path" { default = ""     }
-variable "cloud_init_file" { default = ""     }
-variable "username"        { default = ""     }
-variable "password"        { default = ""     }
+variable "hostname"        		{ default = ""     }
+variable "domain"          		{ default = ""     }
+variable "iface_internal"  		{ default = ""     }
+variable "iface_external"  		{ default = ""     }
+variable "libvirt_bridge_internal" 	{ default = ""     }
+variable "libvirt_bridge_external" 	{ default = ""     }
+variable "libvirt_pool"    		{ default = ""     }
+variable "keymap"          		{ default = ""     }
+variable "timezone"        		{ default = ""     }
+variable "memory"          		{ default = 2      }
+variable "cpu"             		{ default = 2      }
+variable "vm_count"        		{ default = 1      }
+variable "vm_volume_size"  		{ default = 20     }
+variable "os_image_path"   		{ default = ""     }
+variable "id_rsa_pub_path" 		{ default = ""     }
+variable "cloud_init_file" 		{ default = ""     }
+variable "username"        		{ default = ""     }
+variable "password"        		{ default = ""     }
 
 provider "libvirt" {
   uri = "qemu:///system"
@@ -44,7 +46,7 @@ data "template_file" "user_data" {
     id_rsa_pub      = file(var.id_rsa_pub_path)
     keymap          = var.keymap
     timezone        = var.timezone
-    iface           = var.iface
+    iface           = var.iface_internal
     username        = var.username
     password        = var.password
   }
@@ -56,7 +58,7 @@ data "template_file" "network_config" {
   template = file("${path.module}/network_config.cfg")
   vars     = {
     hostname   = format("%s-%02d.%s", var.hostname, count.index + 1, var.domain)
-    iface      = var.iface
+    iface      = var.iface_internal
   }
 }
 
@@ -81,12 +83,12 @@ resource "libvirt_domain" "VMs" {
   }
 
   network_interface {
-    network_name = var.libvirt_network
+    network_name = var.libvirt_bridge_internal
   }
 
-{% if secondary_network is defined and item == secondary_item_type %}
+{% if emit_external_network %}
   network_interface {
-    network_name = "{{ secondary_network }}"
+    network_name = var.libvirt_bridge_external
   }
 
 {% endif %}

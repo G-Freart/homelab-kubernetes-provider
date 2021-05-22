@@ -88,39 +88,32 @@
             - "worker"
             - "load_balancer"
 
-        - name: "Cloud instance setting -- Preparing terraform templates - removing kvm_guest.tf.j2 file"
-          file:
-            path:            "{{ instance_dir }}/{{ cluster_name }}/terraform/{{ item }}/kvm_guest.tf.j2"
-            state:           "absent"
-          loop:
-            - "control_plane"
-            - "worker"
-            - "load_balancer"
-
-        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact about secondary network bridge"
+        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact of control_plane"
           set_fact:
-            secondary_network: "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.bridge }}"
-          when: 
-            - clusters.definition[cluster_name].load_balancers.vrrp                 is defined
-            - clusters.definition[cluster_name].load_balancers.vrrp.external        is defined
-            - clusters.definition[cluster_name].load_balancers.vrrp.external.bridge is defined
+            emit_external_network: "{{ clusters.definition[cluster_name].control_planes.has_external_network }}"
 
-        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact about VMs type allowed for secondary network"
-          set_fact:
-            secondary_item_type: "load_balancer"
-          when: 
-            - clusters.definition[cluster_name].load_balancers.vrrp                 is defined
-            - clusters.definition[cluster_name].load_balancers.vrrp.external        is defined
-            - clusters.definition[cluster_name].load_balancers.vrrp.external.bridge is defined
-
-        - name: "Cloud instance setting -- Preparing terraform templates - templating kvm_guest.tf file"
+        - name: "Cloud instance setting -- Preparing terraform templates - templating control_plane"
           template:
             src:             "templates/terraform/kvm_guest.tf.j2"
-            dest:            "{{ instance_dir }}/{{ cluster_name }}/terraform/{{ item }}/kvm_guest.tf"
-          loop:
-            - "control_plane"
-            - "worker"
-            - "load_balancer"
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/terraform/control_plane/kvm_guest.tf"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact of control_plane"
+          set_fact:
+            emit_external_network: "{{ clusters.definition[cluster_name].worker_nodes.has_external_network }}"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - templating control_plane"
+          template:
+            src:             "templates/terraform/kvm_guest.tf.j2"
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/terraform/worker/kvm_guest.tf"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - Setting fact of control_plane"
+          set_fact:
+            emit_external_network: "{{ clusters.definition[cluster_name].load_balancers.has_external_network }}"
+
+        - name: "Cloud instance setting -- Preparing terraform templates - templating control_plane"
+          template:
+            src:             "templates/terraform/kvm_guest.tf.j2"
+            dest:            "{{ instance_dir }}/{{ cluster_name }}/terraform/load_balancer/kvm_guest.tf"
 
         - name: "Cloud instance setting -- Generating VM password of {{ username }}"
           set_fact:

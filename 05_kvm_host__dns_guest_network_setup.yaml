@@ -43,13 +43,13 @@
       block:
         - name: Guest DNS network setup  - Check if Network is already configured
           stat:
-            path:   "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge }}.network"
+            path:   "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge_internal }}.network"
           register: networkd_def
 
         - name: Guest DNS network setup  - Configure Network for related libvirt network (Ubuntu)
           template:
             src:   templates/network_systemd/bridge.network.j2
-            dest:  "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge }}.network"
+            dest:  "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge_internal }}.network"
           become:  true
           when:    networkd_def.stat.exists == False
 
