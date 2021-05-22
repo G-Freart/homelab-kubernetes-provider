@@ -6,15 +6,9 @@
 #                                                                                            #
 # ------------------------------------------------------------------------------------------ #
 
-{% for host in groups['load_balancers'] %}{% if inventory_hostname == hostvars[host].inventory_hostname %}
-{% if  clusters.definition[cluster_name].load_balancers.vrrp.external          is defined
-   and clusters.definition[cluster_name].load_balancers.vrrp.external.iface    is defined
-%}
 network:
     ethernets:
-        {{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}:
+        {{ clusters.definition[cluster_name].network.iface_external }}:
             dhcp4: false
             dhcp6: false
     version: 2
-{% endif %}
-{% endif %}{% endfor %}

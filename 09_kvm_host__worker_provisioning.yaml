@@ -54,7 +54,7 @@
         variables:
           hostname:                    "{{ cluster_name }}-worker"
           domain:                      "{{ clusters.definition[cluster_name].network.domain }}"
-          iface:                       "{{ clusters.definition[cluster_name].network.iface }}"
+          iface:                       "{{ clusters.definition[cluster_name].network.iface_internal }}"
           keymap:                      "{{ keymap }}"
           timezone:                    "{{ timezone }}"
           libvirt_network:             "{{ clusters.definition[cluster_name].network.bridge }}"

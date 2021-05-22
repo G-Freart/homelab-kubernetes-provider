@@ -76,30 +76,6 @@
 
           when: cloud_images[clusters.definition[cluster_name].guest_os].package_manager == 'apt'
 
-        - name: Load balancer VRRP setup -- Check if external network configuration exists
-          stat:
-            path:       /etc/netplan/20_external_network.yaml
-          register:     extnet
-          when:         ansible_distribution == 'Ubuntu'
-
-        - name: Load balancer VRRP setup -- Ensuring external network configuration
-          block:
-            - name: Load balancer VRRP setup -- Creating external network configuration
-              template:
-                src:        templates/keepalived/20_external_network.yaml.j2
-                dest:       /etc/netplan/20_external_network.yaml
-          
-            - name: Load balancer VRRP setup -- Reapply netplan configuration
-              shell:
-                cmd:        netplan apply
-
-          when:     
-            - ansible_distribution == 'Ubuntu'
-            - clusters.definition[cluster_name].load_balancers.vrrp.external       is defined
-            - clusters.definition[cluster_name].load_balancers.vrrp.external.iface is defined
-            - extnet.stat.exists == False
-          become:       true
-          
         - name: Load balancer VRRP setup -- Retreiving vrrp passwords
           set_fact:
             vrrp_internal_password: "{{ lookup ('file', instance_dir + '/' + cluster_name + '/secret/vrrp_internal_password.txt') }}"
@@ -124,7 +100,7 @@
             - name: Load balancer VRRP setup -- Firewalld - Adding network interface to the internal zone
               firewalld:
                 zone:              external
-                interface:         "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}"
+                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
                 permanent:         true
                 state:             enabled
 
@@ -179,7 +155,7 @@
                 rule:              allow
                 port:              http
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}"
+                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
                 direction:         in
 
             - name: Load balancer VRRP setup -- Ufw - Allowing https service
@@ -187,7 +163,7 @@
                 rule:              allow
                 port:              https
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}"
+                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
                 direction:         in
 
             - name: Load balancer VRRP setup -- Ufw - Allowing haproxy stat custom port service 
@@ -195,7 +171,7 @@
                 rule:              allow
                 port:              '9000'
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}"
+                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
                 direction:         in
 
             - name: Load balancer VRRP setup -- Ufw - Allowing kubernetes apirest incoming request
@@ -203,7 +179,7 @@
                 rule:              allow
                 port:              '6443'
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}"
+                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
                 direction:         in
             
             - name: Load balancer VRRP setup -- Ufw - Allowing kubernetes apirest outgoing request
@@ -211,7 +187,7 @@
                 rule:              allow
                 port:              '6443'
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].load_balancers.vrrp.external.iface }}"
+                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
                 direction:         out
             
           become:   true
@@ -236,13 +212,11 @@
         - clusters.definition[cluster_name].load_balancers.vrrp is defined
         - (
             clusters.definition[cluster_name].load_balancers.vrrp.internal       is defined and 
-            clusters.definition[cluster_name].load_balancers.vrrp.internal.iface is defined and
             clusters.definition[cluster_name].load_balancers.vrrp.internal.vip   is defined
           ) 
           or 
           (
             clusters.definition[cluster_name].load_balancers.vrrp.external       is defined and 
-            clusters.definition[cluster_name].load_balancers.vrrp.external.iface is defined and
             clusters.definition[cluster_name].load_balancers.vrrp.external.vip   is defined
           )
         - ansible_local['homelab-kubernetes-provider']['setup']['vrrp'] is not defined

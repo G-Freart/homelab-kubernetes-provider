@@ -48,7 +48,7 @@
 
         - name: Guest DNS network setup  - Configure Network for related libvirt network (Ubuntu)
           template:
-            src:   templates/systemd_network/bridge.network.j2
+            src:   templates/network_systemd/bridge.network.j2
             dest:  "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge }}.network"
           become:  true
           when:    networkd_def.stat.exists == False

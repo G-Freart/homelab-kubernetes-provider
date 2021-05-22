@@ -1,0 +1,127 @@
+# ------------------------------------------------------------------------------------------ #
+#                                                                                            #
+#                Copyright (c) 2021 - Gilles Freart. All right reserved                      #
+#                                                                                            #
+#  Licensed under the MIT License. See LICENSE in the project root for license information.  #
+#                                                                                            #
+# ------------------------------------------------------------------------------------------ #
+
+- name: This playbook will configure the load balancer VRRP
+  hosts: control_planes,workers,load_balancers
+
+  vars_files:
+    - vars/default-settings.yaml
+    - group_vars/kvm_guest/cloud_images.yaml
+
+  tasks:
+
+    - block:
+        - name: Loading CentOS 7 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-7.yaml
+            name:        c7x
+        - name: Loading CentOS 8 Stream cluster samples
+          include_vars:
+            file:        vars/testlab_samples/centos-8-stream.yaml
+            name:        c8s
+        - name: Loading Ubuntu 20.04 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.04.yaml
+            name:        u2004
+        - name: Loading Ubuntu 20.10 cluster samples
+          include_vars:
+            file:        vars/testlab_samples/ubuntu-20.10.yaml
+            name:        u2010
+        - name: Loading Your custom cluster definition
+          include_vars:
+            file:        vars/clusters.yaml
+            name:        custo
+        - name: Merging all cluster definitions
+          set_fact:
+            clusters: "{{ custo | combine(c7x, recursive=True) | combine(c8s, recursive=True) | combine(u2004, recursive=True) | combine(u2010, recursive=True) }}"
+
+    - name:  External Network setup -- Current provisioning facts of the VMs 
+      debug:
+        var: ansible_local['homelab-kubernetes-provider']
+
+    - name:  External Network setup -- Configure External Network on current group
+      block:
+
+        - name: External Network setup -- Check if external network configuration exists on current group
+          stat:
+            path:       /etc/netplan/20_network_external.yaml
+          register:     extnet
+          when:         ansible_distribution == 'Ubuntu'
+
+        - name: External Network setup -- Ensuring external network configuration on control plane
+          block:
+            - name: External Network setup -- Creating external network configuration
+              template:
+                src:        templates/network_external/20_external_network.yaml.j2
+                dest:       /etc/netplan/20_network_external.yaml
+
+            - name: External Network setup -- Reapply netplan configuration
+              shell:
+                cmd:        netplan apply
+
+          when:
+            - clusters.definition[cluster_name].network.iface_external is defined
+            - ansible_distribution == 'Ubuntu'
+            - extnet.stat.exists == False
+            - '"control_planes" in hostvars[inventory_hostname].group_names'
+            - clusters.definition[cluster_name].control_planes.external_iface is defined
+            - clusters.definition[cluster_name].control_planes.external_iface == True
+          become:       true
+
+        - name: External Network setup -- Ensuring external network configuration on worker nodes
+          block:
+            - name: External Network setup -- Creating external network configuration
+              template:
+                src:        templates/network_external/20_external_network.yaml.j2
+                dest:       /etc/netplan/20_network_external.yaml
+
+            - name: External Network setup -- Reapply netplan configuration
+              shell:
+                cmd:        netplan apply
+
+          when:
+            - clusters.definition[cluster_name].network.iface_external is defined
+            - ansible_distribution == 'Ubuntu'
+            - extnet.stat.exists == False
+            - '"workers" in hostvars[inventory_hostname].group_names'
+            - clusters.definition[cluster_name].worker_nodes.external_iface is defined
+            - clusters.definition[cluster_name].worker_nodes.external_iface == True
+          become:       true
+
+        - name: External Network setup -- Ensuring external network configuration on load balancers nodes
+          block:
+            - name: External Network setup -- Creating external network configuration
+              template:
+                src:        templates/network_external/20_external_network.yaml.j2
+                dest:       /etc/netplan/20_network_external.yaml
+
+            - name: External Network setup -- Reapply netplan configuration
+              shell:
+                cmd:        netplan apply
+
+          when:
+            - clusters.definition[cluster_name].network.iface_external is defined
+            - ansible_distribution == 'Ubuntu'
+            - extnet.stat.exists == False
+            - '"load_balancers" in hostvars[inventory_hostname].group_names'
+            - clusters.definition[cluster_name].load_balancers.external_iface is defined
+            - clusters.definition[cluster_name].load_balancers.external_iface == True
+          become:       true
+
+        - name: External Network setup -- Storing new state inside the homelab-kubernetes-provider custom fact
+          lineinfile:
+            path:   /etc/ansible/facts.d/homelab-kubernetes-provider.fact
+            line:   "external_network=true"
+          become:   true
+
+        - name: External Network setup -- Reload the homelab-kubernetes-provider custom fact
+          setup:
+            filter: ansible_local
+
+      when:
+        - ansible_local['homelab-kubernetes-provider']['setup']['external_network'] is not defined

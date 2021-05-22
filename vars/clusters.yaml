@@ -15,41 +15,43 @@ definition:
     guest_os:           'Ubuntu 20.04'
     container_runtime:  crio
     cni_plugin:         flannel
-    ingress:            haproxy
+    ingress:            nginx
 
     control_planes:
       vms:              3
       vcpu:             2
       mem:              6
       disk:             30
+      external_iface:   false
 
     worker_nodes:
       vms:              5
       vcpu:             3
       mem:              12
       disk:             120
+      external_iface:   false
 
     load_balancers:
       vms:              2
       vcpu:             2
       mem:              4
       disk:             30
+      external_iface:   true
 
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.1.2/24
 
         external:
-          iface:        ens4
           route_id:     103
           vip:          192.168.0.103/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.1.0/24
       domain:           homelab
       bridge:           homelab

@@ -21,33 +21,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -67,33 +70,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -112,33 +118,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -157,33 +166,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -202,33 +214,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -247,33 +262,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -292,33 +310,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -337,33 +358,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -382,33 +406,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -427,33 +454,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -472,33 +502,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab
@@ -517,33 +550,36 @@ definition:
       vcpu:             2
       mem:              2
       disk:             20
+      external_iface:   false
 
     worker_nodes:
       vms:              1
       vcpu:             2
       mem:              2
       disk:             30
+      external_iface:   false
 
     load_balancers:
       vms:              1
       vcpu:             1
       mem:              2
       disk:             20
+      external_iface:   true
+
       vrrp:
 
         internal:
-          iface:        ens3
           route_id:     2
           vip:          192.168.150.2/24
 
         external:
-          iface:        ens4
           route_id:     113
           vip:          192.168.0.113/24
           bridge:       host-bridge
 
     network:
-      iface:            ens3
+      iface_internal:   ens3
+      iface_external:   ens4
       network_cidr:     192.168.150.0/24
       domain:           k8s.testlab
       bridge:           k8s-testlab

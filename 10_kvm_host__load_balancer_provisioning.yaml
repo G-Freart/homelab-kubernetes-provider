@@ -54,7 +54,7 @@
         variables:
           hostname:                    "{{ cluster_name }}-load-balancer"
           domain:                      "{{ clusters.definition[cluster_name].network.domain }}"
-          iface:                       "{{ clusters.definition[cluster_name].network.iface }}"
+          iface:                       "{{ clusters.definition[cluster_name].network.iface_internal }}"
           keymap:                      "{{ keymap }}"
           timezone:                    "{{ timezone }}"
           libvirt_network:             "{{ clusters.definition[cluster_name].network.bridge }}"
@@ -92,5 +92,5 @@
         path:    ~/.ssh/known_hosts
         state:   absent
       loop:      "{{ groups['load_balancers']  }}"
-      when:      clusters.definition[cluster_name].control_planes.vms > 1
+      when:      clusters.definition[cluster_name].control_planes.vms > 0
       
