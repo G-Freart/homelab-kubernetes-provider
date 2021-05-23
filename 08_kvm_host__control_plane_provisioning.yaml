@@ -53,11 +53,11 @@
         force_init:                    true
         variables:
           hostname:                    "{{ cluster_name }}-control-plane"
-          domain:                      "{{ clusters.definition[cluster_name].network.domain }}"
-          iface_internal:              "{{ clusters.definition[cluster_name].network.iface_internal }}"
-          iface_external:              "{{ clusters.definition[cluster_name].network.iface_external }}"
-          libvirt_bridge_internal:     "{{ clusters.definition[cluster_name].network.bridge_internal }}"
-          libvirt_bridge_external:     "{{ clusters.definition[cluster_name].network.bridge_external }}"
+          domain:                      "{{ clusters.definition[cluster_name].network.internal.domain }}"
+          iface_internal:              "{{ clusters.definition[cluster_name].network.internal.iface }}"
+          iface_external:              "{{ clusters.definition[cluster_name].network.external.iface }}"
+          libvirt_bridge_internal:     "{{ clusters.definition[cluster_name].network.internal.bridge }}"
+          libvirt_bridge_external:     "{{ clusters.definition[cluster_name].network.external.bridge }}"
           libvirt_pool:                "{{ cluster_name }}"
           keymap:                      "{{ keymap }}"
           timezone:                    "{{ timezone }}"
@@ -74,9 +74,9 @@
       
     - name: Control Plane provisionning -- Add control_planes to given group
       add_host:
-        hostname:                      '{{ cluster_name }}-control-plane-{{ "%02d" | format (item + 1) }}.{{ clusters.definition[cluster_name].network.domain }}'
-        node_hostname:                 '{{ cluster_name }}-control-plane-{{ "%02d" | format (item + 1) }}.{{ clusters.definition[cluster_name].network.domain }}'
-        node_fqdn:                     '{{ cluster_name }}-control-plane-{{ "%02d" | format (item + 1) }}.{{ clusters.definition[cluster_name].network.domain }}'
+        hostname:                      '{{ cluster_name }}-control-plane-{{ "%02d" | format (item + 1) }}.{{ clusters.definition[cluster_name].network.internal.domain }}'
+        node_hostname:                 '{{ cluster_name }}-control-plane-{{ "%02d" | format (item + 1) }}.{{ clusters.definition[cluster_name].network.internal.domain }}'
+        node_fqdn:                     '{{ cluster_name }}-control-plane-{{ "%02d" | format (item + 1) }}.{{ clusters.definition[cluster_name].network.internal.domain }}'
         node_mac:                      "{{ output_control_planes.outputs.macs.value[item]|lower }}"
         ansible_ssh_private_key_file:  "~/.ssh/id_rsa"
         ansible_user:                  "{{ username }}"

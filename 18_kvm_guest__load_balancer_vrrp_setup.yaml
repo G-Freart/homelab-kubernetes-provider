@@ -100,7 +100,7 @@
             - name: Load balancer VRRP setup -- Firewalld - Adding network interface to the internal zone
               firewalld:
                 zone:              external
-                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
+                interface:         "{{ clusters.definition[cluster_name].network.external.iface }}"
                 permanent:         true
                 state:             enabled
 
@@ -155,7 +155,7 @@
                 rule:              allow
                 port:              http
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
+                interface:         "{{ clusters.definition[cluster_name].network.external.iface }}"
                 direction:         in
 
             - name: Load balancer VRRP setup -- Ufw - Allowing https service
@@ -163,7 +163,7 @@
                 rule:              allow
                 port:              https
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
+                interface:         "{{ clusters.definition[cluster_name].network.external.iface }}"
                 direction:         in
 
             - name: Load balancer VRRP setup -- Ufw - Allowing haproxy stat custom port service 
@@ -171,7 +171,7 @@
                 rule:              allow
                 port:              '9000'
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
+                interface:         "{{ clusters.definition[cluster_name].network.external.iface }}"
                 direction:         in
 
             - name: Load balancer VRRP setup -- Ufw - Allowing kubernetes apirest incoming request
@@ -179,7 +179,7 @@
                 rule:              allow
                 port:              '6443'
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
+                interface:         "{{ clusters.definition[cluster_name].network.external.iface }}"
                 direction:         in
             
             - name: Load balancer VRRP setup -- Ufw - Allowing kubernetes apirest outgoing request
@@ -187,7 +187,7 @@
                 rule:              allow
                 port:              '6443'
                 proto:             tcp
-                interface:         "{{ clusters.definition[cluster_name].network.iface_external }}"
+                interface:         "{{ clusters.definition[cluster_name].network.external.iface }}"
                 direction:         out
             
           become:   true

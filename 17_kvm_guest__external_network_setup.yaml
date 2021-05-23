@@ -65,7 +65,7 @@
                 cmd:        netplan apply
 
           when:
-            - clusters.definition[cluster_name].network.iface_external is defined
+            - clusters.definition[cluster_name].network.external.iface is defined
             - ansible_distribution == 'Ubuntu'
             - extnet.stat.exists == False
             - '"control_planes" in hostvars[inventory_hostname].group_names'
@@ -85,7 +85,7 @@
                 cmd:        netplan apply
 
           when:
-            - clusters.definition[cluster_name].network.iface_external is defined
+            - clusters.definition[cluster_name].network.external.iface is defined
             - ansible_distribution == 'Ubuntu'
             - extnet.stat.exists == False
             - '"workers" in hostvars[inventory_hostname].group_names'
@@ -105,7 +105,7 @@
                 cmd:        netplan apply
 
           when:
-            - clusters.definition[cluster_name].network.iface_external is defined
+            - clusters.definition[cluster_name].network.external.iface is defined
             - ansible_distribution == 'Ubuntu'
             - extnet.stat.exists == False
             - '"load_balancers" in hostvars[inventory_hostname].group_names'

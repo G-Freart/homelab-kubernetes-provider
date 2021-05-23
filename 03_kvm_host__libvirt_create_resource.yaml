@@ -45,27 +45,27 @@
         state:     directory
       become:      true
 
-    - name: "Libvirt create resource -- check if network '{{ clusters.definition[cluster_name].network.bridge_internal }}' exists"
+    - name: "Libvirt create resource -- check if network '{{ clusters.definition[cluster_name].network.internal.bridge }}' exists"
       shell:
-        cmd:      "virsh net-list --all | grep -e '{{ clusters.definition[cluster_name].network.bridge_internal }}' | wc -l"
+        cmd:      "virsh net-list --all | grep -e '{{ clusters.definition[cluster_name].network.internal.bridge}}' | wc -l"
       register:    network_exists
  
-    - name: "Libvirt create resource -- Define network '{{ clusters.definition[cluster_name].network.bridge_internal }}'"
+    - name: "Libvirt create resource -- Define network '{{ clusters.definition[cluster_name].network.internal.bridge}}'"
       community.libvirt.virt_net:
         command:   define
-        name:      "{{ clusters.definition[cluster_name].network.bridge_internal }}"
+        name:      "{{ clusters.definition[cluster_name].network.internal.bridge}}"
         xml:       '{{ lookup("template", "templates/libvirt/network.xml.j2") }}'
       when:        network_exists.stdout == "0"
  
-    - name: "Libvirt create resource -- Configuring autostart mode on network '{{ clusters.definition[cluster_name].network.bridge_internal }}'"
+    - name: "Libvirt create resource -- Configuring autostart mode on network '{{ clusters.definition[cluster_name].network.internal.bridge }}'"
       community.libvirt.virt_net:
-        name:      "{{ clusters.definition[cluster_name].network.bridge_internal }}"
+        name:      "{{ clusters.definition[cluster_name].network.internal.bridge }}"
         autostart: true
  
-    - name: "Libvirt create resource -- Starting network '{{ clusters.definition[cluster_name].network.bridge_internal }}'"
+    - name: "Libvirt create resource -- Starting network '{{ clusters.definition[cluster_name].network.internal.bridge }}'"
       community.libvirt.virt_net:
         command:   start
-        name:      "{{ clusters.definition[cluster_name].network.bridge_internal }}"
+        name:      "{{ clusters.definition[cluster_name].network.internal.bridge}}"
  
     - name: "Libvirt create resource -- Define storage pool '{{ cluster_name }}'"
       community.libvirt.virt_pool:

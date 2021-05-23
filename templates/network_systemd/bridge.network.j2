@@ -7,15 +7,15 @@
 # ------------------------------------------------------------------------------------------ #
 
 [Match]
-Name={{ clusters.definition[cluster_name].network.bridge }}
+Name={{ clusters.definition[cluster_name].network.internal.bridge }}
 
 [Link]
 MTUBytes=1500
 
 [Network]
-Address={{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}/{{ clusters.definition[cluster_name].network.network_cidr | ipaddr("prefix") }}
-DNS={{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}
-Domains={{ clusters.definition[cluster_name].network.domain }}
+Address={{ clusters.definition[cluster_name].network.internal.network_cidr | next_nth_usable(1) }}/{{ clusters.definition[cluster_name].network.internal.network_cidr | ipaddr("prefix") }}
+DNS={{ clusters.definition[cluster_name].network.internal.network_cidr | next_nth_usable(1) }}
+Domains={{ clusters.definition[cluster_name].network.internal.domain }}
 
 #ConfigureWithoutCarrier=yes
-#Gateway={{ clusters.definition[cluster_name].network.network_cidr | next_nth_usable(1) }}
+#Gateway={{ clusters.definition[cluster_name].network.internal.network_cidr | next_nth_usable(1) }}

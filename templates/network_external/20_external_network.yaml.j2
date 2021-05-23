@@ -8,7 +8,7 @@
 
 network:
     ethernets:
-        {{ clusters.definition[cluster_name].network.iface_external }}:
+        {{ clusters.definition[cluster_name].network.external.iface }}:
             dhcp4: false
             dhcp6: false
     version: 2

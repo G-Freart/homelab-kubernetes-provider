@@ -43,13 +43,13 @@
       block:
         - name: Guest DNS network setup  - Check if Network is already configured
           stat:
-            path:   "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge_internal }}.network"
+            path:   "/etc/systemd/network/{{ clusters.definition[cluster_name].network.internal.bridge }}.network"
           register: networkd_def
 
         - name: Guest DNS network setup  - Configure Network for related libvirt network (Ubuntu)
           template:
             src:   templates/network_systemd/bridge.network.j2
-            dest:  "/etc/systemd/network/{{ clusters.definition[cluster_name].network.bridge_internal }}.network"
+            dest:  "/etc/systemd/network/{{ clusters.definition[cluster_name].network.internal.bridge }}.network"
           become:  true
           when:    networkd_def.stat.exists == False
 
@@ -78,13 +78,13 @@
 
         - name: Guest DNS network setup  - Check if NetworkManager is configured for related libvirt network
           stat:
-            path:   "/etc/NetworkManager/dnsmasq.d/{{ clusters.definition[cluster_name].network.domain }}.conf"
+            path:   "/etc/NetworkManager/dnsmasq.d/{{ clusters.definition[cluster_name].network.internal.domain }}.conf"
           register: libvirt_network_result
     
         - name: Guest DNS network setup  - Configure NetworkManager for related libvirt network
           template:
             src:   templates/dnsmasq/libvirt_dnsmasq.conf.j2
-            dest:  "/etc/NetworkManager/dnsmasq.d/{{ clusters.definition[cluster_name].network.domain }}.conf"
+            dest:  "/etc/NetworkManager/dnsmasq.d/{{ clusters.definition[cluster_name].network.internal.domain }}.conf"
           become:  true
           when:    libvirt_network_result.stat.exists == False
     

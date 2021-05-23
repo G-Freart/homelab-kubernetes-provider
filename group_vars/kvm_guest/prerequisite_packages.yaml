@@ -16,6 +16,7 @@ prerequisite_packages:
       - { state: "present", name: "htop"                    }  
       - { state: "present", name: "curl"                    }  
       - { state: "present", name: "telnet"                  }  
+      - { state: "present", name: "net-tools"               }  
       - { state: "present", name: "bash-completion"         }  
       - { state: "present", name: "inetutils-traceroute"    }
 
@@ -28,6 +29,7 @@ prerequisite_packages:
       - { state: "present", name: "htop"                    }  
       - { state: "present", name: "curl"                    }  
       - { state: "present", name: "telnet"                  }  
+      - { state: "present", name: "net-tools"               }  
       - { state: "present", name: "bash-completion"         }  
       - { state: "present", name: "inetutils-traceroute"    }
 

@@ -48,14 +48,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -99,14 +102,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -149,14 +155,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -199,14 +208,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -249,14 +261,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -299,14 +314,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -349,14 +367,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -399,14 +420,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -449,14 +473,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -499,14 +526,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -549,14 +579,17 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
 
@@ -599,13 +632,16 @@ definition:
           vip:                    192.168.0.113/24
 
     network:
-      iface_internal:             ens3
-      bridge_internal:            k8s-testlab
+      internal:
+        iface:                    ens3
+        bridge:                   k8s-testlab
+        network_cidr:             192.168.150.0/24
+        domain:                   k8s.testlab
 
-      iface_external:             ens4
-      bridge_external:            host-bridge
+      external:
+        iface:                    ens4
+        bridge:                   host-bridge
+        network_cidr:             192.168.0.0/24
 
-      network_cidr:               192.168.150.0/24
-      domain:                     k8s.testlab
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16

@@ -29,7 +29,7 @@ definition:
       vcpu:                     3
       mem:                      12
       disk:                     120
-      has_external_network:     false
+      has_external_network:     true
 
     load_balancers:
       vms:                      2
@@ -41,22 +41,25 @@ definition:
       vrrp:
 
         internal:
-          route_id:     2
-          vip:          192.168.1.2/24
+          route_id:             2
+          vip:                  192.168.1.2/24
 
         external:
-          route_id:     103
-          vip:          192.168.0.103/24
+          route_id:             103
+          vip:                  192.168.0.103/24
 
     network:
-      iface_internal:   ens3
-      bridge_internal:  homelab
+      internal:
+        iface:                  ens3
+        bridge:                 homelab
+        network_cidr:           192.168.1.0/24
+        domain:                 homelab
 
-      iface_external:   ens4
-      bridge_external:  host-bridge
+      external:
+        iface:                  ens4
+        bridge:                 host-bridge
+        network_cidr:           192.168.0.0/24
 
-      network_cidr:     192.168.1.0/24
-      domain:           homelab
-      pod_cidr:         10.20.0.0/16
-      service_cidr:     10.110.0.0/16
+      pod_cidr:                 10.20.0.0/16
+      service_cidr:             10.110.0.0/16
 
