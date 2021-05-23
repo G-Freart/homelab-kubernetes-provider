@@ -11,4 +11,9 @@ network:
         {{ clusters.definition[cluster_name].network.external.iface }}:
             dhcp4: false
             dhcp6: false
+{% if clusters.definition[cluster_name].network.external.gateway is defined %}
+            routes:
+            - to: {{ clusters.definition[cluster_name].network.external.network_cidr }}
+              via: {{ clusters.definition[cluster_name].network.external.gateway }}
+{% endif %}
     version: 2

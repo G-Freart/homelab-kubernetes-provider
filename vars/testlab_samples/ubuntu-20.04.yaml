@@ -58,6 +58,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -112,6 +113,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -165,6 +167,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -218,6 +221,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -271,6 +275,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -324,6 +329,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -377,6 +383,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -430,6 +437,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -483,6 +491,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -536,6 +545,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -589,6 +599,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
@@ -642,6 +653,7 @@ definition:
         iface:                    ens4
         bridge:                   host-bridge
         network_cidr:             192.168.0.0/24
+        gateway:                  192.168.0.1
 
       pod_cidr:                   10.20.0.0/16
       service_cidr:               10.110.0.0/16
